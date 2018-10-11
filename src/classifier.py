@@ -16,6 +16,7 @@ import pickle
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.semi_supervised import LabelPropagation
 
 name = 'result/result_' + datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '.csv'
 
@@ -173,6 +174,27 @@ def knn(train_examples, train_labels, test_examples, test_labels, verbose):
     return score
 
 
+def run1(file_path):
+    index = -1
+    features = []
+    label = []
+
+    for path in file_path:
+        a, b, c = fe(path, 1, 1, 0.05, 0.05, compute_beat=False)
+        for example in a:
+            features.append(example.tolist())
+            label.append(index)
+        index += 1
+        print(index, " FOLDER FEATURE EXTRACTED")
+    features = np.asarray(features)
+    label = np.asarray(label)
+    model = LabelPropagation()
+    model.fit(features, label)
+    pkl_filename = "model.pkl"
+    with open(pkl_filename, 'wb') as file:
+        pickle.dump(model, file)
+
+
 def run(file_path, verbose, algorithm):
     features, label = data_preprocessing(file_path)
     skf = StratifiedKFold(n_splits=10, shuffle=True)
@@ -222,6 +244,8 @@ def parse_arguments():
         dest="task", metavar="")
 
     run = tasks.add_parser("run", help="Train the classifier, and output results")
+    run1 = tasks.add_parser("transductive", help="Train the classifier, and output results")
+    run1.add_argument("-i", "--input", required=True, nargs="+", help="Input csv file")
     run.add_argument("-i", "--input", required=True, nargs="+", help="Input csv file")
     run.add_argument("-v", "--verbose", type=int,
                      choices=[1, 0], required=True,
@@ -236,3 +260,5 @@ if __name__ == "__main__":
     args = parse_arguments()
     if args.task == "run":
         run(args.input, args.verbose, args.algorithm)
+    if args.task == "transductive":
+        run1(args.input)
