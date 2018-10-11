@@ -1,4 +1,4 @@
-from  audioFeatureExtraction import dirWavFeatureExtraction as fe
+from audioFeatureExtraction import dirWavFeatureExtraction as fe
 
 import pandas as pd
 import argparse
@@ -110,33 +110,6 @@ def my_predict(model, test_set):
     print("THE NUMBER OF 1 CLASS is ", count1)
 
 
-# diagnose which examples are misclassified
-def diagnose(model, test_examples, test_labels):
-    prediction = model.predict(test_examples)
-    feature_name1 = ["Age", "BMI", "Diuretic", "Stroke", "Migraine", "NeruDisease", "Anxiety", "DB",
-                     "CT_head", "Tobacco", "Number of  previous prescription", "StopSE", "NOF", "Daily_Incontinence",
-                     "DayVoid", "NightVoid", "StressIncontinence", "Constipation", "Hysterectomy", "Sling", "Prior",
-                     "Post-menopausal", "Ba", "Label", "Prediction"
-                     ]
-    with open(name, 'w') as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=feature_name1)
-        writer.writeheader()
-        for index in range(0, len(prediction)):
-            if prediction[index] != test_labels[index]:
-                example = test_examples[index]
-                dic = {"Age": example[0], "BMI": example[1], "Diuretic": example[2], "Stroke": example[3],
-                       "NeruDisease": example[4], "Migraine": example[5], "Anxiety": example[6], "DB": example[7],
-                       "CT_head": example[8], "Tobacco": example[9], "Number of  previous prescription": example[10],
-                       "StopSE": example[11], "NOF": example[12], "Daily_Incontinence": example[13],
-                       "DayVoid": example[14],
-                       "NightVoid": example[15], "StressIncontinence": example[16], "Constipation": example[17],
-                       "Hysterectomy": example[18], "Sling": example[19], "Prior": example[20],
-                       "Post-menopausal": example[21], "Ba": example[2], "Label": test_labels[index],
-                       "Prediction": prediction[index]
-                       }
-                writer.writerow(dic)
-
-
 # create gnb neural network architecture
 def gnb(train_examples, train_labels, test_examples, test_labels, verbose):
     model = GaussianNB()
@@ -154,7 +127,6 @@ def mlp(train_examples, train_labels, test_examples, test_labels, verbose):
                        epsilon=0.005
                        )
     nn.fit(train_examples, train_labels)
-    diagnose(nn, test_examples, test_labels)
     score = nn.score(test_examples, test_labels)
     print("CONVERGENCE: ", nn.score(train_examples, train_labels))
     return score
