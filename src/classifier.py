@@ -22,6 +22,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.semi_supervised import LabelPropagation
 from sklearn.ensemble import GradientBoostingClassifier as GBC
 from frameworks.CPLELearning import CPLELearningModel
+from shutil import copyfile
 
 
 
@@ -144,9 +145,13 @@ def my_compare(test_set):
         if labels1[num] != labels2[num]:
             if labels3[num] == 0:
                 print(os.path.basename(wav_file_list[num]))
+                copyfile(wav_file_list[num],"/Users/mingxuanju/Desktop/ieee_audio/src/neoplasm/"+os.path.basename(wav_file_list[num]))
+                os.remove(wav_file_list[num])
         else:
             if labels1[num] == 0 :
                 print(os.path.basename(wav_file_list[num]))
+                copyfile(wav_file_list[num],"/Users/mingxuanju/Desktop/ieee_audio/src/neoplasm/" + os.path.basename(wav_file_list[num]))
+                os.remove(wav_file_list[num])
 
 # create gnb neural network architecture
 def gnb(train_examples, train_labels, test_examples, test_labels, verbose):
@@ -299,7 +304,7 @@ def run(file_path, verbose, algorithm):
     print("AVERAGE ACCURACY: ", total / 10)
     model = LinearSVC(verbose=verbose, penalty='l2',
                       dual=False,
-                      max_iter=3000)
+                      max_iter=100000)
     model.fit(features, label)
     pkl_filename = "svm.pkl"
     with open(pkl_filename, 'wb') as file:

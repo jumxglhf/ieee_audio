@@ -73,6 +73,7 @@ import math
 import copy as cp
 import logging
 import numpy as np
+from ipython_genutils.py3compat import xrange
 from numpy import *
 import operator
 from time import time
@@ -747,7 +748,7 @@ class LinearKernel():
         assert self._data1.shape[1] == (self._data2.T).shape[0]
         try:
             return self._data1 * self._data2.T
-        except Exception, e:
+        except Exception as e:
             logging.error("Error while computing kernel matrix: " + str(e))
             import traceback
             traceback.print_exc()
@@ -802,7 +803,7 @@ class DictLinearKernel():
                         km[i, j] = val
                 return km
             
-        except Exception, e:
+        except Exception as e:
             logging.error("Error while computing kernel matrix: " + str(e))
             sys.exit()
         logging.debug("Kernel Matrix computed...")
@@ -866,7 +867,7 @@ class RBFKernel():
                 self.__km = - self.__sigma_squared_inv * self.__km
                 self.__km = np.exp(self.__km)
                 return self.__km
-        except Exception, e:
+        except Exception as e:
             logging.error("Error while computing kernel matrix: " + str(e))
             sys.exit()
 
@@ -918,7 +919,7 @@ class DictRBFKernel():
                         val = self.getKernelValue(self._data1[i], self._data2[j])
                         km[i, j] = val
                 return km
-        except Exception, e:
+        except Exception as e:
             logging.error("Error while computing kernel matrix: " + str(e))
             sys.exit()
         logging.info("Kernel Matrix computed...")
