@@ -1,3 +1,6 @@
+import glob
+import os
+
 from audioFeatureExtraction import dirWavFeatureExtraction as fe
 
 import pandas as pd
@@ -17,6 +20,10 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.semi_supervised import LabelPropagation
+from sklearn.ensemble import GradientBoostingClassifier as GBC
+from frameworks.CPLELearning import CPLELearningModel
+
+
 
 name = 'result/result_' + datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '.csv'
 
@@ -85,7 +92,7 @@ def svc(train_examples, train_labels, test_examples, test_labels, verbose):
 def random_forest(train_examples, train_labels, test_examples, test_labels, verbose):
     # class_weight = {0: 1, 1: 2} for fail, and contrary for no_fail
     model = RandomForestClassifier(n_estimators=70, criterion="entropy",
-                                   warm_start=False, max_features=3,
+                                   warm_start=False,
                                    min_samples_split=3, class_weight={0: 3, 1: 1}
                                    )
     model.fit(train_examples, train_labels)
@@ -96,20 +103,50 @@ def random_forest(train_examples, train_labels, test_examples, test_labels, verb
 
 # load a model and predict
 def my_predict(model, test_set):
+    types = ('*.wav', '*.aif', '*.aiff', '*.mp3', '*.au', '*.ogg')
+    wav_file_list = []
+    for files in types:
+        wav_file_list.extend(glob.glob(os.path.join(test_set, files)))
+
+    wav_file_list = sorted(wav_file_list)
     with open(model, 'rb') as file:
         loaded_model = pickle.load(file)
     features = data_not_label(test_set)
     labels = loaded_model.predict(features)
-    count0 = 0
-    count1 = 0
+    count = [0,0,0,0]
+    index = 0
     for label in labels:
+        count[label] += 1
         if label == 0:
-            count0 += 1
-        if label == 1:
-            count1 += 1
-    print("THE NUMBER OF 0 CLASS is ", count0)
-    print("THE NUMBER OF 1 CLASS is ", count1)
+            print(os.path.basename(wav_file_list[index]))
+        index += 1
+    for number in range(0,4):
+        print("THE NUMBER OF ",number, " CLASS is ", count[number])
 
+
+def my_compare(test_set):
+    features = data_not_label(test_set)
+    types = ('*.wav', '*.aif', '*.aiff', '*.mp3', '*.au', '*.ogg')
+    wav_file_list = []
+    for files in types:
+        wav_file_list.extend(glob.glob(os.path.join(test_set, files)))
+    wav_file_list = sorted(wav_file_list)
+    with open("/Users/mingxuanju/Desktop/ieee_audio/src/svm.pkl", 'rb') as file:
+        svmm = pickle.load(file)
+    with open("/Users/mingxuanju/Desktop/ieee_audio/src/transductive.pkl", 'rb') as file:
+        transm = pickle.load(file)
+    with open("/Users/mingxuanju/Desktop/ieee_audio/src/tsvm.pkl", 'rb') as file:
+        rfm = pickle.load(file)
+    labels1 = svmm.predict(features)
+    labels2 = transm.predict(features)
+    labels3 = rfm.predict(features)
+    for num in range(0,len(labels1)):
+        if labels1[num] != labels2[num]:
+            if labels3[num] == 0:
+                print(os.path.basename(wav_file_list[num]))
+        else:
+            if labels1[num] == 0 :
+                print(os.path.basename(wav_file_list[num]))
 
 # create gnb neural network architecture
 def gnb(train_examples, train_labels, test_examples, test_labels, verbose):
@@ -136,7 +173,7 @@ def mlp(train_examples, train_labels, test_examples, test_labels, verbose):
 # create svm architecture
 def svm(train_examples, train_labels, test_examples, test_labels, verbose):
     model = LinearSVC(verbose=verbose, penalty='l2',
-                      dual=False, class_weight={0: 3, 1: 1},
+                      dual=False,
                       max_iter=3000)
     model.fit(train_examples, train_labels)
     score = model.score(test_examples, test_labels)
@@ -174,6 +211,14 @@ def knn(train_examples, train_labels, test_examples, test_labels, verbose):
     return score
 
 
+def gradient_boost(train_examples, train_labels, test_examples, test_labels, verbose):
+    model = GBC(learning_rate=0.1, n_estimators=500, subsample=1.0,
+                min_samples_split=2, max_depth=3)
+    model.fit(train_examples, train_labels)
+    score = model.score(test_examples, test_labels)
+    return score
+
+
 def run1(file_path):
     index = -1
     features = []
@@ -188,11 +233,33 @@ def run1(file_path):
         print(index, " FOLDER FEATURE EXTRACTED")
     features = np.asarray(features)
     label = np.asarray(label)
-    model = LabelPropagation()
+    model = LabelPropagation(max_iter=100000)
     model.fit(features, label)
-    pkl_filename = "model.pkl"
+    pkl_filename = "transductive.pkl"
     with open(pkl_filename, 'wb') as file:
         pickle.dump(model, file)
+        print("MODEL SAVED")
+
+
+def run2(file_path):
+    index = -1
+    features = []
+    label = []
+    model = CPLELearningModel(SVC(kernel="rbf", probability=True), predict_from_probabilities=True)
+    for path in file_path:
+        a, b, c = fe(path, 1, 1, 0.05, 0.05, compute_beat=False)
+        for example in a:
+            features.append(example.tolist())
+            label.append(index)
+        index += 1
+        print(index, " FOLDER FEATURE EXTRACTED")
+    features = np.asarray(features)
+    label = np.asarray(label)
+    model.fit(features, label)
+    pkl_filename = "tsvm.pkl"
+    with open(pkl_filename, 'wb') as file:
+        pickle.dump(model, file)
+
 
 
 def run(file_path, verbose, algorithm):
@@ -209,6 +276,8 @@ def run(file_path, verbose, algorithm):
 
         if algorithm == 'MLP':
             score = mlp(features_train, labels_train, features_test, labels_test, verbose)
+        elif algorithm == 'GBC':
+            score = gradient_boost(features_train, labels_train, features_test, labels_test, verbose)
         elif algorithm == 'SVM':
             score = svm(features_train, labels_train, features_test, labels_test, verbose)
             # THIS ONE SEEMS LIKE NOT WORKING#
@@ -229,10 +298,10 @@ def run(file_path, verbose, algorithm):
     print("-----------------------------------------")
     print("AVERAGE ACCURACY: ", total / 10)
     model = LinearSVC(verbose=verbose, penalty='l2',
-                      dual=False, class_weight={0: 3, 1: 1},
+                      dual=False,
                       max_iter=3000)
     model.fit(features, label)
-    pkl_filename = "model.pkl"
+    pkl_filename = "svm.pkl"
     with open(pkl_filename, 'wb') as file:
         pickle.dump(model, file)
 
@@ -246,11 +315,13 @@ def parse_arguments():
     run = tasks.add_parser("run", help="Train the classifier, and output results")
     run1 = tasks.add_parser("transductive", help="Train the classifier, and output results")
     run1.add_argument("-i", "--input", required=True, nargs="+", help="Input csv file")
+    run2 = tasks.add_parser("tsvm", help="Train the classifier, and output results")
+    run2.add_argument("-i", "--input", required=True, nargs="+", help="Input csv file")
     run.add_argument("-i", "--input", required=True, nargs="+", help="Input csv file")
     run.add_argument("-v", "--verbose", type=int,
                      choices=[1, 0], required=True,
                      help="Run program silently or not")
-    run.add_argument("--algorithm", required=True, choices=["MLP", "SVC", "DTREE", "KNN", "SVM", "BRBM", "GNB", "RF"],
+    run.add_argument("--algorithm", required=True, choices=["MLP", "GBC","SVC", "DTREE", "KNN", "SVM", "BRBM", "GNB", "RF"],
                      help="The selected algorithm")
 
     return parser.parse_args()
@@ -262,3 +333,6 @@ if __name__ == "__main__":
         run(args.input, args.verbose, args.algorithm)
     if args.task == "transductive":
         run1(args.input)
+    if args.task == "tsvm":
+        run2(args.input)
+
