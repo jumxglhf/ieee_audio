@@ -11,7 +11,7 @@
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
 
-\title{Paper Title*\\
+\title{IEEE Audio\\
 {\footnotesize \textsuperscript{*}Note: Sub-titles are not captured in Xplore and
 should not be used}
 \thanks{Identify applicable funding agency here. If none, delete this.}
@@ -40,18 +40,6 @@ email address}
 \textit{name of organization (of Aff.)}\\
 City, Country \\
 email address}
-\and
-\IEEEauthorblockN{5\textsuperscript{th} Given Name Surname}
-\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
-\textit{name of organization (of Aff.)}\\
-City, Country \\
-email address}
-\and
-\IEEEauthorblockN{6\textsuperscript{th} Given Name Surname}
-\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
-\textit{name of organization (of Aff.)}\\
-City, Country \\
-email address}
 }
 
 \maketitle
@@ -69,6 +57,87 @@ component, formatting, style, styling, insert
 \section{Introduction}
 This document is a model and instructions for \LaTeX.
 Please observe the conference page limits. 
+
+\section{Methodology}
+
+The methods used
+
+\section{Results \& Discussion}
+
+We have submitted several sets of results. It seems that it is difficult to detect the normal cases. While our model are able to detect the normal examples with 70.0\% to 80.0\% in Augut's submission, the prediction is pretty bad. 
+
+\begin{table}[htbp]
+	\caption{July's cross validation}
+	\begin{center}
+		\begin{tabular}{|c|c|}
+			\hline
+			Model & Accuracy \\
+			\hline
+			K-Nearest Neighbor & 68.0 \% \\
+			\hline
+		\end{tabular}
+		\label{tab0}
+	\end{center}
+\end{table}
+
+\begin{table}[htbp]
+	\caption{August's cross validation}
+	\begin{center}
+		\begin{tabular}{|c|c|c|}
+			\hline
+			Model & Support Vector Machine & Random Forest \\
+			\hline
+			normal accuracy & 72.0 \% & 77.0 \% \\
+			\hline
+			vocal palsy & c & c \\
+			\hline
+			phonotrauma & c & c \\
+			\hline
+			Neoplasm &c & c\\
+			\hline
+		\end{tabular}
+		\label{tab1}
+	\end{center}
+\end{table}
+
+\begin{table}[htbp]
+	\caption{October's Cross Validation}
+	\begin{center}
+		\begin{tabular}{|c|c|}
+			\hline
+			Model & Support Vector Machine \\
+			\hline
+			Normal & 87.0 \% \\
+			\hline
+			Volcal palsy & 89.0 \% \\
+			\hline
+			Phonotrauma & 74.0 \% \\
+			\hline
+		\end{tabular}
+		\label{tab2}
+	\end{center}
+\end{table}
+
+
+
+\begin{table}[htbp]
+	\caption{Results}
+	\begin{center}
+		\begin{tabular}{|c|c|c|c|}
+			\hline
+			Attempt & Sensitivity & Specificity & UAR \\ 
+			\hline
+			July & 83.7 \% & 56.0 \% & 51.83 \% \\
+			\hline
+			August & 95.1 \% &  32.0 \% & 58.4 \% \\  
+			\hline
+			October & 82.2 \% & 60.0 \% & 63.77\% \\
+			\hline
+		\end{tabular}
+		\label{tab3}
+	\end{center}
+\end{table}
+		
 
 \section{Ease of Use}
 
@@ -224,12 +293,12 @@ copy& More table copy$^{\mathrm{a}}$& &  \\
 \hline
 \multicolumn{4}{l}{$^{\mathrm{a}}$Sample of a Table footnote.}
 \end{tabular}
-\label{tab1}
+\label{tab4}
 \end{center}
 \end{table}
 
 \begin{figure}[htbp]
-\centerline{\includegraphics{fig1.png}}
+% \centerline{\includegraphics{fig1.png}}
 \caption{Example of a figure caption.}
 \label{fig}
 \end{figure}
