@@ -54,9 +54,17 @@ sray@case.edu}
 \subsection{Feature Extraction:}
 	We utilized general audio features: Zero Crossing Rae, Energy, Entropy of Energy, Spectral Centroid, Spectral Entropy, Spectral Spread, Spectral Entropy, Spectral Flux, Spectral Rolloff,  MFCCs, Chroma Vector and Chroma Deviation. The library we used for those feature extractions are pyAudioAnalysis\cite{b1}.\\
 	After analyzing the dataset, we also noticed that number of local minimum amplitude peaks is one representative feature and we added that to feature list.\\
-\subsection{Model Building:}
+\subsection{Model Selection:}
 	Our whole model-building infrastructure is based on scikit-learn\cite{b2}\cite{b3}. \\
-	At the beginning, we tried to solve this problem using only one single classifier(K-Nearest Neighbor) and it did not turn out to be legitimate with 68\% accuracy on 10-fold cross validation. This classifier undercalled Normal and Neoplasm patients, which we think is resulted from different class distributions between training and testing set. So, we converted this relatively complex learning task into three less complicated tasks: Normal vs. Pathological, Vocal vs. Rest, Phonotrauma vs. Neoplasm. 
+	We tried K-Nearest Neighbor, Support Vector Machine, Boosting, Random Forest, Extratrees, Multiple Instance Learning, Label Propagation. After few experiments, we finalized our focus on SVM, Label Propagation, SVC and MILR with pipeline. This classifier undercalled Normal and Neoplasm patients, which we think is resulted from different class distributions between training and testing set. So, we converted this relatively complex learning task into three less complicated tasks: Normal vs. Pathological, Vocal vs. Rest of Diseases, and Phonotrauma vs. Neoplasm.[Fig. 1.] The reason why we design the pipeline this way is based on the difficulty of classification. (From easiest Normal vs. Pathological to hardest Phonotrauma vs. Neoplasm)
+	\begin{figure}[htbp]
+		\begin{center}
+			\includegraphics[scale=0.35]{Diagram_1.png}
+		\end{center}
+		\caption{Pipeline Ensemble}
+	\end{figure}
+	\subsection{Model Building:}
+	
 
 
 \section{Results \& Discussion}
