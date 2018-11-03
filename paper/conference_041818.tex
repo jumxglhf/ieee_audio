@@ -59,8 +59,17 @@ This document is a model and instructions for \LaTeX.
 Please observe the conference page limits. 
 
 \section{Methodology}
+\subsection{Data Preprocessing:}
+\begin{itemize}
+	\item Silence and Noise Removal\\
+	Doing a spot check on both training and testing set, we discovered that there exists silence or noise at the beginning of most audio files. We removed those silence or noise parts by calculating the average loudness of each audio file, and recursively comparing the value of 30\% of average loudness to first $\frac{3}{4}$ of the audio file.\\
+	\item Equalizing Loudness:\\
+	We also figured out that ,between training set and testing sets, there is a loudness difference not representative of class label. So, we linearly equalized average loudness of each file by the average loudness of all audio files. \\
+\end{itemize}
+\subsection{Feature Extraction:}
 
-The methods used
+
+
 
 \section{Results \& Discussion}
 
