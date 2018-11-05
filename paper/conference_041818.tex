@@ -75,54 +75,21 @@ sray@case.edu}
 
 \section{Results \& Discussion}
 
-We have submitted several sets of results. It seems that it is difficult to detect the normal cases. While our model are able to detect the normal examples with 70.0\% to 80.0\% in Augut's submission, the prediction is pretty bad. 
+We've tried several different kinds of models such as Transductive SVM, SVM, Label Propagation and Multiple Instance Learning. Some of these works well such as Label Propagation, it is able to detect 69 normal cases, but the Multiple Instance Learning is only capturing 12 normal cases out of 400, which is under calling a lot of normal examples, though there is a very high Area under ROC graph, 0.96. It seems that it is difficult to detect the normal cases. It seems that there might be some mismatch between the testing examples and training examples. While our model are able to detect the normal examples with 87 \% in the cross validation of SVM, the actual ensemble results are far worse than our result. We can see from Table 1. that there are 27 \% difference between the two results.
+
 
 \begin{table}[htbp]
-	\caption{July's cross validation}
-	\begin{center}
-		\begin{tabular}{|c|c|}
-			\hline
-			Model & Accuracy \\
-			\hline
-			K-Nearest Neighbor & 68.0 \% \\
-			\hline
-		\end{tabular}
-		\label{tab0}
-	\end{center}
-\end{table}
-
-\begin{table}[htbp]
-	\caption{August's cross validation}
+	\caption{SVM Cross Validation VS Actual Result}
 	\begin{center}
 		\begin{tabular}{|c|c|c|}
 			\hline
-			Model & Support Vector Machine & Random Forest \\
+			Model & Support Vector Machine & Actual Result \\
 			\hline
-			normal accuracy & 72.0 \% & 77.0 \% \\
+			Normal & 87.0 \% & 60.0 \% \\
 			\hline
-			vocal palsy & c & c \\
+			Volcal palsy & 89.0 \% & ?\\
 			\hline
-			phonotrauma & c & c \\
-			\hline
-			Neoplasm &c & c\\
-			\hline
-		\end{tabular}
-		\label{tab1}
-	\end{center}
-\end{table}
-
-\begin{table}[htbp]
-	\caption{October's Cross Validation}
-	\begin{center}
-		\begin{tabular}{|c|c|}
-			\hline
-			Model & Support Vector Machine \\
-			\hline
-			Normal & 87.0 \% \\
-			\hline
-			Volcal palsy & 89.0 \% \\
-			\hline
-			Phonotrauma & 74.0 \% \\
+			Phonotrauma & 74.0 \% & ?\\
 			\hline
 		\end{tabular}
 		\label{tab2}
@@ -130,25 +97,12 @@ We have submitted several sets of results. It seems that it is difficult to dete
 \end{table}
 
 
+We have also used TSVM, which also under calls a lot of normal patients.
 
-\begin{table}[htbp]
-	\caption{Results}
-	\begin{center}
-		\begin{tabular}{|c|c|c|c|}
-			\hline
-			Attempt & Sensitivity & Specificity & UAR \\ 
-			\hline
-			July & 83.7 \% & 56.0 \% & 51.83 \% \\
-			\hline
-			August & 95.1 \% &  32.0 \% & 58.4 \% \\  
-			\hline
-			October & 82.2 \% & 60.0 \% & 63.77\% \\
-			\hline
-		\end{tabular}
-		\label{tab3}
-	\end{center}
-\end{table}
-		
+
+\section{Conclusion}
+
+
 
 \begin{thebibliography}{00}
 \bibitem{b1} Tyiannak, pyAudioAnalysis, https://github.com/tyiannak/pyAudioAnalysis/wiki/3.-Feature-Extraction
