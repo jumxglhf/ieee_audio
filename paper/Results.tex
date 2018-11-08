@@ -1,0 +1,25 @@
+\section{Results \& Discussion}
+
+We've tried several different kinds of models such as Transductive SVM, SVM, Label Propagation and Multiple Instance Learning. Some of these works well such as Label Propagation, it is able to detect 69 normal cases, but the Multiple Instance Learning is only capturing 12 normal cases out of 400, which is under calling a lot of normal examples, though there is a very high Area under ROC graph, 0.96. It seems that it is difficult to detect the normal cases. It seems that there might be some mismatch between the testing examples and training examples. While our model are able to detect the normal examples with 87 \% in the cross validation of SVM, the actual ensemble results are far worse than our result. We can see from Table 1. that there are 27 \% difference between the two results.
+
+
+\begin{table}[htbp]
+	\caption{SVM Cross Validation VS Actual Result}
+	\begin{center}
+		\begin{tabular}{|c|c|c|}
+			\hline
+			Model & Support Vector Machine & Actual Result \\
+			\hline
+			Normal & 87.0 \% & 60.0 \% \\
+			\hline
+			Volcal palsy & 89.0 \% & ?\\
+			\hline
+			Phonotrauma & 74.0 \% & ?\\
+			\hline
+		\end{tabular}
+		\label{tab2}
+	\end{center}
+\end{table}
+
+
+We have also used TSVM, which also under calls a lot of normal patients.
