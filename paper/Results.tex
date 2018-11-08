@@ -1,25 +1,27 @@
 \section{Results \& Discussion}
 
-We've tried several different kinds of models such as Transductive SVM, SVM, Label Propagation and Multiple Instance Learning. Some of these works well such as Label Propagation, it is able to detect 69 normal cases, but the Multiple Instance Learning is only capturing 12 normal cases out of 400, which is under calling a lot of normal examples, though there is a very high Area under ROC graph, 0.96. It seems that it is difficult to detect the normal cases. It seems that there might be some mismatch between the testing examples and training examples. While our model are able to detect the normal examples with 87 \% in the cross validation of SVM, the actual ensemble results are far worse than our result. We can see from Table 1. that there are 27 \% difference between the two results.
+
+We have several different kinds of models such as SVM, Label Propagation and Multiple Instance Learning in our ensemble. Some of these works well such as Label Propagation, it is able to detect 69 normal cases, but the Multiple Instance Learning is only capturing 12 normal cases out of 400, which is under calling a lot of normal examples, though there is a very high Area under ROC graph, 0.96. It seems that it is difficult to detect the normal cases. It also seems that there might be some mismatch between the testing examples and training examples. While our model are able to detect the normal examples with 87 \% in the cross validation of SVM, the actual ensemble results are far worse than our result. We can see from Table 1. that there are 27 \% difference between the two results. 
 
 
-\begin{table}[htbp]
+\begin{table*}[!htbp]
 	\caption{SVM Cross Validation VS Actual Result}
 	\begin{center}
-		\begin{tabular}{|c|c|c|}
+		\begin{tabular}{|c|c|c|c|c|c|}
 			\hline
-			Model & Support Vector Machine & Actual Result \\
+			 & SVM CV & MIL CV & ensemble & with TSVM & without TSVM \\
 			\hline
-			Normal & 87.0 \% & 60.0 \% \\
+			Normal vs Pathological & 87.0 \%& & & 60.0 \% & 76 \%  \\
 			\hline
-			Volcal palsy & 89.0 \% & ?\\
+			Volcal palsy vs rest & 89.0 \% & && 63.77 \%& 60.67 \%\\
 			\hline
-			Phonotrauma & 74.0 \% & ?\\
+			Phonotrauma vs Neoplasm & 74.0 \% &&& &\\
 			\hline
 		\end{tabular}
 		\label{tab2}
 	\end{center}
-\end{table}
+\end{table*}
 
+We have also used Transductive SVM in our previous prediction. TSVMs exploit specific iterative algorithms which gradually search a reliable separating hyperplane (in the kernel space) with a transductive process that incorporates both labeled and unlabeled samples in the training phase[tsvm].
 
-We have also used TSVM, which also under calls a lot of normal patients.
+In Table 1, we can see the different results we get after we removed the TSVM from the ensemble. The problem with TSVM is that it can only find 20 ?? normal cases, where there are about 80 normal cases in the actual test data. We do find that after removing the TSVM, we get an inscrease in the number of normal cases detected. However, the classification for pathological classes decreased by about 3 \%. We suspect that the TSVM is good for the disease classification but not for distinguishing if the example is normal or not. 
