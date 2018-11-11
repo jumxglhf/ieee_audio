@@ -9,17 +9,17 @@
 \subsection{Feature Extraction:}
 \begin{itemize}
 	\item Zero Crossing Rate(ZCR):\\
-	The rate of sign-changes of the signal during the duration of a particular frame.\cite{b1}\\
+	The rate of sign-changes of the signal during the duration of a particular frame.\cite{b1}We calculate ZCR by equation: $\frac{1}{T-1}\sum_{T-1}^{t = 1}(s_t s_{t-1})$ where s is single with length T.\\
 	\item Energy:\\
-	The sum of squares of the signal values, normalized by the respective frame length.\cite{b2}\\
+	The sum of squares of the signal values, normalized by the respective frame length.\cite{b2} We calculate EE by equation: Energy = $W_{potential} + W_{kinetic} = \int_{V}^{} \frac{p^2}{2p_0c^2} dV + \int_{V}^{} \frac{pv^2}{2}dV$.\\
 	\item Entropy of Energy(EE):\\
-	The entropy of sub-frames' normalized energies. It can be interpreted as a measure of abrupt changes.\cite{b2}\\
+	The entropy of sub-frames' normalized energies. It can be interpreted as a measure of abrupt changes.\cite{b2} Setting number of short blocks n to 10, we calculate EE by equation: EE = $\frac{(\frac{L}{n})^2}{Eol +eps} \log_{2}({(\frac{(\frac{L}{n})^2}{Eol +eps} + eps})$, where L is the length of audio frame, eps is the learning rate and Eol is the total energy of this frame.\\
 	\item Spectral Centroid(SC):\\
-	It indicates where the "center of mass" of the spectrum is located. Perceptually, it has a robust connection with the impression of "brightness" of a sound.\cite{b3}\\
+	It indicates where the "center of mass" of the spectrum is located. Perceptually, it has a robust connection with the impression of "brightness" of a sound.\cite{b3} We calculate SC through equation: SC = $\frac{\sum_{n = 0}^{N - 1} f(n)x(x)}{\sum_{n = 0}^{N - 1} x(n)}$, where f(n) is the frequency of current bin and x(n) is weighted frequency value.\\
 	\item Spectral Entropy(SE):\cite{b1}\\
-	Entropy of the normalized spectral energies for a set of sub-frames.\cite{b3}\\
+	Entropy of the normalized spectral energies for a set of sub-frames.\cite{b3}. We calculate SE through equation: SE = $-\sum_{i = 1}^{n} \frac{\frac{1}{N} |X(w_i)|^2}{\sum_{i}^{}\frac{1}{N} |X(w_i)|^2} \ln\frac{\frac{1}{N} |X(w_i)|^2}{\sum_{i}^{}\frac{1}{N} |X(w_i)|^2}$. \\
 	\item Spectral Spread(SS):\\
-	The second central moment of the spectrum.\cite{b3}\\
+	The second central moment of the spectrum.\cite{b3}. With SC, we can calculate SS by equation: SC = $\sqrt{\frac{\sum_{k = 0}^{\frac{N}{2}} (f_k-SC)^2 |X(k)|^2}{\sum_{k = 0}^{\frac{N}{2}} |X(k)|^2 }}$\\
 	\item Spectral Entropy:\\
 	Entropy of the normalized spectral energies for a set of sub-frames.\cite{b3}\\
 	\item Spectral Flux:\\
@@ -62,15 +62,15 @@ Transductive Learning Algorithms:\newline\\
 \indent Noticing that size of test set is twice size of training set, in order to get better generalization, we want to utilize test set and attempted several transductive learning algorithms. \\
 \begin{itemize}
 	\item Label Propagation:\\
-	Identifying the test example's closest training set neighbor, Label Propagation assigns the same label that neighbor has to the test example. Without CV on this algorithm, we compare the number of assigned labels of each class to that from SVMs. From Label Propagation, we get 69 Normals, 107 Vocal Palsys and 171 Phonotraumas. From Linear SVM, we get 65 Normals, 79 Vocal Palsys and 167 Phonotraumas.
+	Identifying the test example's closest training set neighbor, Label Propagation assigns the same label that neighbor has to the test example. Without CV on this algorithm, we compare the number of assigned labels of each class to that from SVMs. From Label Propagation, we get 69 Normals, 107 Vocal Palsys and 171 Phonotraumas. From Linear SVM, we get 65 Normals, 79 Vocal Palsys and 167 Phonotraumas.\\
 	\item Transductive Support Vector Machine(TSVM):\\
 	This is a SVM-RBF based classifier with test set regulating the range of how far away the hyperplane can extends. Although in test set, TSVM overcalls a great number of Normal, it could give us a board view of all 'Normal-ish' examples, and later on we could limit our focus on this specific set of Normals. \\
 \end{itemize}
 
-Multiple Instance Learning Regression(MILR):
+Multiple Instance Learning Regression(MILR):\\
 \begin{itemize}
 	\item 
-	Instead of receiving a set of instances which are individually labeled, the learner receives a set of labeled bags, each containing many instances. In the simple case of multiple-instance binary classification, a bag may be labeled negative if all the instances in it are negative. On the other hand, a bag is labeled positive if there is at least one instance in it which is positive. \cite{b10} Although MILR undercalls Normal, having super high Area under ROC Curve(AUC) 0.92, MILR could work as an oracle and we only focus on test examples labeled with confidence higher than 85\%
+	Instead of receiving a set of instances which are individually labeled, the learner receives a set of labeled bags, each containing many instances. In the simple case of multiple-instance binary classification, a bag may be labeled negative if all the instances in it are negative. On the other hand, a bag is labeled positive if there is at least one instance in it which is positive. \cite{b10} Although MILR undercalls Normal, having super high Area under ROC Curve(AUC) 0.92, MILR could work as an oracle and we only focus on test examples labeled with confidence higher than 85\%.\\
 \end{itemize}
 \subsection{Model Selection:}
 	Our whole model-building infrastructure is based on scikit-learn\cite{b7}\cite{b8}. \\
@@ -81,6 +81,8 @@ Multiple Instance Learning Regression(MILR):
 		\end{center}
 		\caption{Pipeline Ensemble}
 	\end{figure}
-	\subsection{Hyper Parameter Tuning:}
-		Since the size of training set is getting smaller and smaller as we propagate through the pipeline, in order to get trustworthy accuracy to tune parameter for SVC, for all three ensembles, we use the same parameter tuned in the first ensemble. The process is pretty straightforward; we simply set up two loops, one of which for C and one of which for gamma. The tuned parameters are 10 for C, and 0.01 for gamma. Also due to the skewed distribution in training set, we modify the class weight with respect to the proportion of class. 
+
+\subsection{Hyper Parameter Tuning:}
+Since the size of training set is getting smaller and smaller as we propagate through the pipeline, in order to get trustworthy accuracy to tune parameter for SVC, for all three ensembles, we use the same parameter tuned in the first ensemble. The process is pretty straightforward; we simply set up two loops, one of which for C and one of which for gamma. The tuned parameters are 10 for C, and 0.01 for gamma. Also due to the skewed distribution in training set, we modify the class weight with respect to the proportion of class. 
+
 
