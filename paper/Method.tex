@@ -70,7 +70,7 @@ Transductive Learning Algorithms:\newline\\
 Multiple Instance Learning Regression(MILR):
 \begin{itemize}
 	\item 
-	Instead of receiving a set of instances which are individually labeled, the learner receives a set of labeled bags, each containing many instances. In the simple case of multiple-instance binary classification, a bag may be labeled negative if all the instances in it are negative. On the other hand, a bag is labeled positive if there is at least one instance in it which is positive. \cite{b10} Although MILR undercalls Normal, having super high Area under ROC Curve(AUC) 0.92, we can trust examples labeled with confidence higher than 85\% and regard MILR as an oracle.
+	Instead of receiving a set of instances which are individually labeled, the learner receives a set of labeled bags, each containing many instances. In the simple case of multiple-instance binary classification, a bag may be labeled negative if all the instances in it are negative. On the other hand, a bag is labeled positive if there is at least one instance in it which is positive. \cite{b10} Although MILR undercalls Normal, having super high Area under ROC Curve(AUC) 0.92, MILR could work as an oracle and we only focus on test examples labeled with confidence higher than 85\%
 \end{itemize}
 \subsection{Model Selection:}
 	Our whole model-building infrastructure is based on scikit-learn\cite{b7}\cite{b8}. \\
