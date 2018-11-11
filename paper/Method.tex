@@ -36,6 +36,25 @@
 	The number of local minimum amplitude peaks.\\
 \end{itemize}
 First 13 features are widely used in the field of machine learning for audio classification. We utilize an existing library\cite{b6} that implements first those features. The last feature Local Amplitude Minimum is introduced by us to help classifiers distinguishing normal audio and abnormal audio, which turns out to be extremely efficient. \\
+\subsection{Validation Method:}
+Before mentioning detailed structure and algorithm we have attempted, I want to point out that we measure accuracy using stratified 10-fold cross validation(CV). Any classifier's accuracy is the weighted average accuracy of numbers we get from 10 folds.  \\
+\indent However, for transductive learning algorithm such as Transductive Support Vector Machine or Label Propagation, we could not do cross validation since there is no validation set for transductive learning. Accuracy we have on those algorithms is the accuracy on whole training set, in other word, the rate of convergence. 
+\subsection{Attempted Model:}
+Tree-Based Algorithms:
+\begin{itemize}
+	\item Decision Tree:\\
+	Utilizing tree structures, decision tree algorithm calculates entropy of each feature and splits node based on the rank of features with respect to their entropies. Probably due to the fact that different classes are representative in different features and skewed class distribution, a single decision tree could not solve this learning problem and we only get 62\% accuracy on CV.\\
+	\item Random Forest:\\
+	Instead of having a single tree structure, Random Forest fits a number of decision tree classifiers on various sub-samples of the dataset.\cite{b7} Using Random Forest classifier, we get 89\% accuracy on CV. But even with such high accuracy, Random Forest performs poorly on test set according to the feedback from oracle. We analyze that the differences on performance between training set and testing set probably result from skewed data distribution and over-fitting. \\
+\end{itemize}
+\indent Based on cross validation results on experiments we have done, it seems like tree-based algorithm generally is inappropriate for this learning task. \newline\\
+Support Vector Machines(SVMs):\\
+\begin{itemize}
+	\item Linear SVM:\\
+	Based on the features' distribution of each training example, SVM differentiates classes by building a hyperplane that maximizes the margin between classes. And for Linear SVM, the decision boundary is a linear function. After tuning loss penalty and class weight, we get 91\% accuracy on CV and a relatively reasonable classification on test set according to the feedback from oracle.\\
+	\item SVM with Radial Basis Function kernel(SVM-RBF):\\
+	Pretty similar to Linear SVM, SVM-RBF differs by the non-linear kernel function. After having a reasonable result from Linear SVM, we were excited on trying SVM-RBF(with tuned loss penalty and gamma). It ends up having 89\% on CV and similar test set performance. However in the late phase, we discarded SVM-RBF because with the number of features we have, it is possible that a non-linear kernel function over-fits. \\
+\end{itemize}
 
 \subsection{Model Selection:}
 	Our whole model-building infrastructure is based on scikit-learn\cite{b7}\cite{b8}. \\
