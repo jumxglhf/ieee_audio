@@ -3,31 +3,61 @@
 
 We have several different kinds of models including TSVM, SVM, Label Propagation and MILR in our ensemble. 
 
-Some of these works well such as Label Propagation, it is able to detect 69 normal cases, but the MILR is only capturing far fewer normal cases. However, there is a very high Area under ROC graph for MILR, 0.96. It seems that it is difficult to detect the normal cases. For TSVM, it is overcalling a lot of normal cases with the default 50\% confidence threshold, which have the opposite the problem compared with MILR. So we think that there might be some mismatches between the testing examples and training examples, probably there are some features that are not included in the training examples but appeared in the testing files. It is very obvious to see that the UAR for cross validation of SVM is 76.40\% and the UAR for test cases is only 64.77\%. So we have to change the confidence level in order to get a closer result.
+Some of these works well such as Label Propagation, it is able to detect 69 normal cases, but the MILR is capturing far fewer normal cases. However, there is a very high Area under ROC graph for MILR, 0.96. It seems that it is difficult to detect the normal cases. For TSVM, it is overcalling a lot of normal cases with the default 50\% confidence threshold, which have the opposite the problem compared with MILR. So we think that there might be some mismatches between the testing examples and training examples, probably there are some features that are not included in the training examples but appeared in the testing files. It is very obvious to see that the UAR for cross validation of SVM is 76.40\% and the UAR for test cases is only 64.77\%. So we have to change the confidence level in order to get a closer result.
 
 We are able to detect the normal examples with 79.5\% in the cross validation for SVM, [number] \% for the MILR, but the actual result for the test cases is 60.0\%. We can see from Table 1. that there are 20\% difference between the two results. Since the other two methods are Label Propagation and TSVM, which are not able to do the cross validation, we can only analyze the SVM and MILR.
 
 
 \begin{table*}[!htbp]
-	\caption{CROSS VALIDATION VS ACTUAL RESULT}
+	\caption{CROSS VALIDATION AND ACTUAL RESULT}
 	\begin{center}
-		\begin{tabular}{|c|c|c|c|c|c|c|}
+		\begin{tabular}{|c|c|c|c|c|c|}
 			\hline
-			 & SVM CV & SVM-RBF & MILR CV & ensemble & with TSVM & without TSVM \\
+			 & SVM CV & SVM-RBF CV & MILR CV & with TSVM & with SVM-RBF \\
 			\hline
-			Sensitivity$^{\mathrm{a}}$  & 88.8\%& 92.1\% && & 82.2 \% & 89.4\% \\
+			Sensitivity$^{\mathrm{a}}$  & 88.8\%& 92.1\% & & 82.2 \% & 89.4\% \\
 			\hline
-			Specificity & 79.5\% & 52.0\%&&& 60.0\% & 76.0 \% \\
+			Specificity & 79.5\% & 52.0\%&& 60.0\% & 76.0 \% \\
 			\hline
-			Volcal palsy recall & 81.0\% &76.0\%& && N/A & N/A \\
+			Volcal palsy recall & 81.0\% &76.0\%& & N/A & N/A \\
 			\hline
-			Phonotrauma recall & 61.0\% &69.6\%&&& N/A& N/A\\
+			Phonotrauma recall & 61.0\% &69.6\%&& N/A& N/A\\
 			\hline
-			Neoplasm recall & 81.1\% & 72.0\%&&& N/A& N/A \\
+			Neoplasm recall & 81.1\% & 72.0\%&& N/A& N/A \\
 			\hline
-			UAR & 76.40\% &72.53\% && & 64.77\% & 60.67\%\\
+			UAR & 76.40\% &72.53\% & & 64.77\% & 60.67\%\\
 			\hline
 			\multicolumn{4}{l}{$^{\mathrm{a}}$ Number of correctly predicted pathological / total pathological}
+		\end{tabular}
+		\label{tab2}
+	\end{center}
+\end{table*}
+
+\begin{table*}[!htbp]
+	\caption{NUMBER OF NORMAL EXAMPLES PREDICTED IN TEST CASES}
+	\begin{center}
+		\begin{tabular}{|c|c|}
+			\hline
+			& Number of Normal \\
+			\hline
+			SVM & 56\\
+			\hline
+			SVM-With Feature Selection & 65\\
+			\hline
+			SVM-RBF & 84 \\
+			\hline
+			MILR & 257 \\
+			\hline
+			Label Propagation & 69 \\
+			\hline
+			TSVM & 261 \\
+			\hline
+			Ensemble with TSVM & 93\\
+			\hline
+			Ensemble with SVM-RBF & 74\\
+			\hline
+			Actual results& 122 \\
+			\hline
 		\end{tabular}
 		\label{tab2}
 	\end{center}
