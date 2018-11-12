@@ -11,40 +11,19 @@
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
 
-\title{IEEE Bigdata Cup 2018 FEMH Challenge Report\\
+\title{A Multi-Representation Ensemble Approach to Classifying Vocal Diseases}
+\author{\IEEEauthorblockN{Mingxuan Ju, Zhengkai Jiang, Yufan Chen and Soumya Ray}
+\IEEEauthorblockA{Department of Electrical Engineering and Computer Science, Case Western Reserve University, Cleveland, OH 44106}
+\IEEEauthorblockA{Email: {\{mxj255, zxj89, yxc775, sray\}@case.edu}}
 }
-
-\author{\IEEEauthorblockN{1\textsuperscript{st} Mingxuan Ju}
-\IEEEauthorblockA{\textit{Department of Electrical Engineering and Computer Science} \\
-\textit{Case Western Reserve University}\\
-Cleveland, Ohio, United States \\
-mxj255@case.edu}
-\and
-\IEEEauthorblockN{2\textsuperscript{nd} Zhengkai Jiang}
-\IEEEauthorblockA{\textit{Department of Electrical Engineering and Computer Science} \\
-	\textit{Case Western Reserve University}\\
-	Cleveland, Ohio, United States \\
-	zxj89@case.edu}
-\and
-\IEEEauthorblockN{3\textsuperscript{rd} Yufan Chen}
-\IEEEauthorblockA{\textit{Department of Electrical Engineering and Computer Science} \\
-	\textit{Case Western Reserve University}\\
-	Cleveland, Ohio, United States \\
-  yxc775@case.edu }
-\and
-\IEEEauthorblockN{4\textsuperscript{th} Soumya Ray}
-\IEEEauthorblockA{\textit{Department of Electrical Engineering and Computer Science} \\
-	\textit{Case Western Reserve University}\\
-	Cleveland, Ohio, United States \\
-	sray@case.edu }
-}
-
 \maketitle
-
-\tableofcontents
+\begin{abstract}
+The goal of the IEEE 2018 FEMH Voice Data Challenge was to develop an effective algorithmic approach to classifying voice samples as normal or pathological, and further subdivide the pathological samples into three types. We adopted a multi-representation ensemble approach to the task. We designed a pipeline with three classification stages, where each stage used a combination of supervised, semi-supervised and multiple-instance learners. This approach was able to achieve a sensitivity of 89\% and specificity of 76\% in classifying normal from pathological samples and an unweighted average recall (UAR) of 60.67\% in subclassifying pathological samples into three types.
+\end{abstract}
+%\tableofcontents
 
 \input{Introduction}
-\input{Background}  % Yufan Chen
+%\input{Background}  % Yufan Chen
 \input{Method}   % Mingxuan Ju
 \input{Results}  % Zhengkai Jiang
 \input{Conclusion}
@@ -90,5 +69,7 @@ Journal of Voice, 2018,
 S. Ray \& M. Craven (2005).
 Supervised versus Multiple-Instance Learning: An Empirical Comparison.
 Appears in the Proceedings of the 22nd International Conference on Machine Learning, Bonn, Germany.
+\bibitem{b11}
+Far Eastern Memorial Hospital, FEMH, https://www.femh.org.tw
 \end{thebibliography}
 \end{document}
