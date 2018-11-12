@@ -1,1 +1,5 @@
-\section{Introduction}
+\section{Introduction and Background}
+The goal of the IEEE 2018 FEMH Voice Data Challenge was to develop an effective algorithmic approach to classifying voice samples as normal or pathological, and further subdivide the pathological samples into three types: vocal palsy, phonotrauma or neoplasm. As noted by the challenge organizers, voice disorders can severely affect quality of life, since humans primarily rely on speech for communication. At the same time, diagnoses of vocal disorders depend on larygeal endoscopy, which requires human expertise and specialized equipment. Thus there is a need for algorithms that could for example be used to triage cases to focus scarce resources.
+
+The task of differentiating normal from pathological voice samples has been investigated in previous work, with a summary of previous approaches in~\cite{b9}. Among these approaches are artificial neural network with Mel-Frequency-Cepstral-Coefficients(MFCC), feature vectors from multiple frames that collectively represent the power spectrum of a sample~\cite{b5}. Others have used wavelet transform with support vector machines (SVMs)~\cite{b4}. Recently a deep neural network~\cite{b9} has been used by dividing the raw waveform into multiple segments and extracting normalized MFCC features from them.
+
