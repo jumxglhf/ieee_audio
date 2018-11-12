@@ -3,7 +3,7 @@
 \def\boldxi{\mbox{\boldmath$\xi$}}
 \def\smallboldxi{\mbox{\boldmath\scriptsize{$\xi$}}}
 
-The challenge as described was clearly separated into two phases. First, we needed to classify the given audio samples into normal or pathological. Then, the pathological samples were to be classified into one of three kinds: vocal palsy, phonotrauma or neoplasm. Upon an initial inspection and analysis of the data, we observed that vocal palsy seemed the easiest to tell apart from normal by listening to the samples. Therefore, we decided upon a pipeline based approach (Figure~\ref{fig:}). In the pipeline, after preprocessing, we first check if a new sample is normal or not. If a sample is classified as abnormal, it is sent to the second stage, where we decide if it is a sample corresponding to vocal palsy. If this stage returns negative, we proceed to the final stage where the sample is assigned a label corresponding to either phonotrauma or neoplasm. An advantage of this approach instead of a simple multiclass approach is that, by eliminating many samples for consideration by the later stages of the pipeline, we may hope to improve accuracy over classifying everything at once. On the other hand, this approach leaves the most ``confusing" examples for the last classifier, and since we do not have the option of returning an ``I don't know" label, it may be that our phonotrauma vs neoplasm classifier could have a lower accuracy.
+The challenge as described was clearly separated into two phases. First, we needed to classify the given audio samples into normal or pathological. Then, the pathological samples were to be classified into one of three kinds: vocal palsy, phonotrauma or neoplasm. Upon an initial inspection and analysis of the data, we observed that vocal palsy seemed the easiest to tell apart from normal by listening to the samples. Therefore, we decided upon a pipeline based approach (Figure~\ref{fig:pipeline}). In the pipeline, after preprocessing, we first check if a new sample is normal or not. If a sample is classified as abnormal, it is sent to the second stage, where we decide if it is a sample corresponding to vocal palsy. If this stage returns negative, we proceed to the final stage where the sample is assigned a label corresponding to either phonotrauma or neoplasm. An advantage of this approach instead of a simple multiclass approach is that, by eliminating many samples for consideration by the later stages of the pipeline, we may hope to improve accuracy over classifying everything at once. On the other hand, this approach leaves the most ``confusing" examples for the last classifier, and since we do not have the option of returning an ``I don't know" label, it may be that our phonotrauma vs neoplasm classifier could have a lower accuracy.
 
 The next consideration was the algorithm to use as a classifier in each stage. Recent machine learning systems and competitions~\cite{} have shown that ensemble approaches are often the best at solving complex problems. This is because typically, a diverse ensemble of classifiers can have elements that each focus on a different aspect of the problem so that when results are combined, the entire system does well. We also chose to follow this principle in designing our classifiers. 
 
@@ -36,7 +36,7 @@ We also considered stratifying our models based on gender. Some prior work sugge
 \subsection{Data Preprocessing, Implementation and Validation}
 A check on the data showed that there was a period of silence at the beginning of most audio files. We removed these parts by calculating the average loudness of each audio file, and removing the prefix of the file that was below  30\% of the average loudness. No other preprocessing was performed on the given data.
 
-All of our algorithms and features were implemented in Python. We used the libraries....[WRITE THIS WITH CITATIONS]. 
+All of our algorithms and features were implemented in Python. We used the libraries Scikit-learn \cite{b17}, . 
 
 Our internal experimentation on the training sets with the supervised and multiple-instance algorithms were performed using 5-fold cross validation. We used these experiments to pick the supervised algorithms to use in our ensemble. We also tried using other approaches such as decision trees and random forests, but they did not perform well on our data.
 
@@ -88,6 +88,7 @@ The SVM classifiers have hyperparameters that need to be tuned. Since the size o
 			\includegraphics[scale=0.35]{Diagram_3.png}
 		\end{center}
 		\caption{The Process of Classifying, including classifier training, ensemble structures and pipeline implementation}
+		\label{fig:pipeline}
 	\end{figure}
 
 % \subsection{Feature Selection:}
