@@ -1,54 +1,27 @@
-\section{Methodology}
-\subsection{Data Preprocessing:}
-\begin{itemize}
-	\item Silence and Noise Removal\\
-	Doing a spot check on both training and testing set, we discovered that there exists silence or noise at the beginning of most audio files. We removed those silence or noise parts by calculating the average loudness of each audio file, and recursively comparing the value of 30\% of average loudness to first $\frac{3}{4}$ of the audio file.\\
-	\item Equalizing Loudness:\\
-	We also figured out that ,between training set and testing sets, there is a loudness difference not representative of class label. So, we linearly equalized average loudness of each file by the average loudness of all audio files. \\
-\end{itemize}
+\section{System Description}
+The challenge as described was clearly separated into two phases. First, we needed to classify the given audio samples into normal or pathological. Then, the pathological samples were to be classified into one of three kinds: vocal palsy, phonotrauma or neoplasm. Upon an initial inspection and analysis of the data, we observed that vocal palsy seemed the easiest to tell apart from normal by listening to the samples. Therefore, we decided upon a pipeline based approach (Figure~\ref{fig:}). In the pipeline, after preprocessing, we first check if a new sample is normal or not. If a sample is classified as abnormal, it is sent to the second stage, where we decide if it is a sample corresponding to vocal palsy. If this stage returns negative, we proceed to the final stage where the sample is assigned a label corresponding to either phonotrauma or neoplasm. An advantage of this approach instead of a simple multiclass approach is that, by eliminating many samples for consideration by the later stages of the pipeline, we may hope to improve accuracy over classifying everything at once. On the other hand, this approach leaves the most ``confusing" examples for the last classifier, and since we do not have the option of returning an ``I don't know" label, it may be that our phonotrauma vs neoplasm classifier could have a lower accuracy.
 
-\begin{itemize}
-	\item Zero Crossing Rate(ZCR):\\
-	The rate of sign-changes of the signal during the duration of a particular frame.\cite{b1}We calculate ZCR by equation: $\frac{1}{T-1}\sum_{t = 1}^{T - 1}(s_t s_{t-1})$ where s is single with length T.\\
-	\item Energy:\\
-	The sum of squares of the signal values, normalized by the respective frame length.\cite{b2} We calculate EE by equation: Energy = $W_{potential} + W_{kinetic} = \int_{V}^{} \frac{p^2}{2p_0c^2} dV + \int_{V}^{} \frac{pv^2}{2}dV$.\\
-	\item Entropy of Energy(EE):\\
-	The entropy of sub-frames' normalized energies. It can be interpreted as a measure of abrupt changes.\cite{b2} Setting number of short blocks n to 10, we calculate EE by equation: EE = $\frac{(\frac{L}{n})^2}{Eol +eps} \log_{2}({(\frac{(\frac{L}{n})^2}{Eol +eps} + eps})$, where L is the length of audio frame, eps is the learning rate and Eol is the total energy of this frame.\\
-	\item Spectral Centroid(SC):\\
-	It indicates where the "center of mass" of the spectrum is located. Perceptually, it has a robust connection with the impression of "brightness" of a sound.\cite{b3} We calculate SC through equation: SC = $\frac{\sum_{n = 0}^{N - 1} f(n)x(x)}{\sum_{n = 0}^{N - 1} x(n)}$, where f(n) is the frequency of current bin and x(n) is weighted frequency value.\\
-	\item Spectral Energy(SE):\cite{b1}\\
-	Entropy of the normalized spectral energies for a set of sub-frames.\cite{b3}. We calculate SE through equation: SE = $\sum_{i = 1}^{N} \frac{1}{N} |X(w_i)|^2$ \\
-	\item Spectral Spread(SS):\\
-	The second central moment of the spectrum.\cite{b3}. With SC, we can calculate SS by equation: SC = $\sqrt{\frac{\sum_{k = 0}^{\frac{N}{2}} (f_k-SC)^2 |X(k)|^2}{\sum_{k = 0}^{\frac{N}{2}} |X(k)|^2 }}$\\
-	\item Spectral Entropy:\\
-	Entropy of the normalized spectral energies for a set of sub-frames.\cite{b3} We calculate Spectral Energy by equation : Spectral Entropy = $-\sum_{i = 1}^{n} \frac{\frac{1}{N} |X(w_i)|^2}{\sum_{i}^{}\frac{1}{N} |X(w_i)|^2} \ln\frac{\frac{1}{N} |X(w_i)|^2}{\sum_{i}^{}\frac{1}{N} |X(w_i)|^2}$.\\
-	\item Spectral Flux:\\
-	The squared difference between the normalized magnitudes of the spectra of the two successive frames.\cite{b3} We calculate Spectral Flux by equation: Spectral Flux = $\int_{\pi_+}^{} I * \cos(\theta(n)) dw(n)$, where I is indicator function of integration that extends only over the solid angles of relevant hemisphere, $\theta(n)$ donates the angle between n and prescribed direction. \\
-	\item Spectral Rolloff:\\
-	The frequency below which 90\% of the magnitude distribution of the spectrum is concentrated.\cite{b3} We calculate Spectral Rolloff through equation : Spectral Rolloff = arg min$\sum_{i = 1}^{f_c} m_i \geq \sum_{i = 1}^{N}0.9 m_i$, where $f_c$ is the rolloff frequency and $m_i$ is the magnitude of the i-th frequency component of the spectrum. \\
-	\item Mel Frequency Cepstral Coefficients(MFCCs):\\
-	Mel Frequency Cepstral Coefficients form a cepstral representation where the frequency bands are not linear but distributed according to the mel-scale.\cite{b4} We calculate MFCC by equation: MFCC = $\sum_{k = 0}^{\frac{N}{2}}\log |s(n)| H_i(k\frac{2\pi}{N_p})$, where N is the frame length, s(n) is DFT signal, $H_i$ is the critical band filter at i-th coefficient, and $N_p$ is the number of points used in the short term DFT.\\
-	\item Chroma Vector:\\
-	A 12-element representation of the spectral energy where the bins represent the 12 equal-tempered pitch classes of western-type music (semitone spacing).\cite{b5} We calculate this by detecting the tone height and chroma of certain segment , and assign each element the vector it falls into.\\
-	\item Chroma Deviation:\\
-	The standard deviation of the 12 chroma coefficients.\cite{b5}\\
-	\item Local Amplitude Minimum:\\
-	The number of local minimum amplitude peaks. We extract this feature by counting the number of frames where its frequency derivative is 0.\\
-\end{itemize}
-First 13 features are widely used in the field of machine learning for audio classification. We utilize an existing library\cite{b6} that implements first those features. The last feature Local Amplitude Minimum is introduced by us to help classifiers distinguishing normal audio and abnormal audio, which turns out to be extremely efficient. \\
+The next consideration was the algorithm to use as a classifier in each stage. Recent machine learning systems and competitions have shown that ensemble approaches are often the best at solving complex problems. This is because typically, a diverse ensemble of classifiers can have elements that each focus on a different aspect of the problem so that when results are combined, the entire system does well. We also chose to follow this principle in designing our classifiers. 
+
+The next question to answer was how to design our ensemble. Rather than going with an off-the-shelp approach, we chose to build an ensemble to 
+
+Recent challenges in machine learning indicate that many tasks can be best handled with an ensemble approach. 
+\subsection{Data Preprocessing and Implementation Details}
+	Doing a spot check on both training and testing set, we discovered that there exists silence or noise at the beginning of most audio files. We removed those silence or noise parts by calculating the average loudness of each audio file, and recursively comparing the value of 30\% of average loudness to first $\frac{3}{4}$ of the audio file.
+
 \subsection{Validation Method:}
 Before mentioning detailed structure and algorithm we have attempted, I want to point out that we measure accuracy using stratified 10-fold cross validation(CV). Any classifier's accuracy is the weighted average accuracy of numbers we get from 10 folds.  \\
 \indent However, for transductive learning algorithm such as Transductive Support Vector Machine or Label Propagation, we could not do cross validation since there is no validation set for transductive learning. Accuracy we have on those algorithms is the accuracy on whole training set, in other word, the rate of convergence. 
-\subsection{Attempted Algorithms:}
-Tree-Based Algorithms:
-\begin{itemize}
-	\item Decision Tree:\\
-	Utilizing tree structures, decision tree algorithm calculates entropy of each feature and splits node based on the rank of features with respect to their entropies. Probably due to the fact that different classes are representative in different features and skewed class distribution, a single decision tree could not solve this learning problem and we only get 62\% accuracy on CV.\\
-	\item Random Forest:\\
-	Instead of having a single tree structure, Random Forest fits a number of decision tree classifiers on various sub-samples of the dataset.\cite{b7} Using Random Forest classifier, we get 89\% accuracy on CV. But even with such high accuracy, Random Forest performs poorly on test set according to the feedback from oracle. We analyze that the differences on performance between training set and testing set probably result from skewed data distribution and over-fitting. \\
-\end{itemize}
+% % \subsection{Attempted Algorithms:}
+% Tree-Based Algorithms:
+% \begin{itemize}
+	% \item Decision Tree:\\
+	% Utilizing tree structures, decision tree algorithm calculates entropy of each feature and splits node based on the rank of features with respect to their entropies. Probably due to the fact that different classes are representative in different features and skewed class distribution, a single decision tree could not solve this learning problem and we only get 62\% accuracy on CV.\\
+	% \item Random Forest:\\
+	% Instead of having a single tree structure, Random Forest fits a number of decision tree classifiers on various sub-samples of the dataset.\cite{b7} Using Random Forest classifier, we get 89\% accuracy on CV. But even with such high accuracy, Random Forest performs poorly on test set according to the feedback from oracle. We analyze that the differences on performance between training set and testing set probably result from skewed data distribution and over-fitting. \\
+% \end{itemize}
 
-\indent Based on cross validation results on experiments we have done, it seems like tree-based algorithm generally is inappropriate for this learning task. \\
+% \indent Based on cross validation results on experiments we have done, it seems like tree-based algorithm generally is inappropriate for this learning task. \\
 
 Support Vector Machines(SVMs):\\
 \begin{itemize}
