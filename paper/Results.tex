@@ -1,27 +1,37 @@
 \section{Results \& Discussion}
 
 
-We have several different kinds of models such as SVM, Label Propagation and Multiple Instance Learning in our ensemble. Some of these works well such as Label Propagation, it is able to detect 69 normal cases, but the Multiple Instance Learning is only capturing 12 normal cases out of 400, which is under calling a lot of normal examples, though there is a very high Area under ROC graph, 0.96. It seems that it is difficult to detect the normal cases. It also seems that there might be some mismatch between the testing examples and training examples. While our model are able to detect the normal examples with 87 \% in the cross validation of SVM, the actual ensemble results are far worse than our result. We can see from Table 1. that there are 27 \% difference between the two results. 
+We have several different kinds of models including TSVM, SVM, Label Propagation and MILR in our ensemble. 
+
+Some of these works well such as Label Propagation, it is able to detect 69 normal cases, but the MILR is only capturing far fewer normal cases. However, there is a very high Area under ROC graph for MILR, 0.96. It seems that it is difficult to detect the normal cases. For TSVM, it is overcalling a lot of normal cases with the default 50\% confidence threshold, which have the opposite the problem compared with MILR. So we think that there might be some mismatches between the testing examples and training examples, probably there are some features that are not included in the training examples but appeared in the testing files. It is very obvious to see that the UAR for cross validation of SVM is 76.40\% and the UAR for test cases is only 64.77\%. So we have to change the confidence level in order to get a closer result.
+
+We are able to detect the normal examples with 79.5\% in the cross validation for SVM, [number] \% for the MILR, but the actual result for the test cases is 60.0\%. We can see from Table 1. that there are 20\% difference between the two results. Since the other two methods are Label Propagation and TSVM, which are not able to do the cross validation, we can only analyze the SVM and MILR.
 
 
 \begin{table*}[!htbp]
-	\caption{SVM Cross Validation VS Actual Result}
+	\caption{CROSS VALIDATION VS ACTUAL RESULT}
 	\begin{center}
-		\begin{tabular}{|c|c|c|c|c|c|}
+		\begin{tabular}{|c|c|c|c|c|c|c|}
 			\hline
-			 & SVM CV & MIL CV & ensemble & with TSVM & without TSVM \\
+			 & SVM CV & SVM-RBF & MILR CV & ensemble & with TSVM & without TSVM \\
 			\hline
-			Normal vs Pathological & 87.0 \%& & & 60.0 \% & 76 \%  \\
+			Sensitivity$^{\mathrm{a}}$  & 88.8\%& 92.1\% && & 82.2 \% & 89.4\% \\
 			\hline
-			Volcal palsy vs rest & 89.0 \% & && 63.77 \%& 60.67 \%\\
+			Specificity & 79.5\% & 52.0\%&&& 60.0\% & 76.0 \% \\
 			\hline
-			Phonotrauma vs Neoplasm & 74.0 \% &&& &\\
+			Volcal palsy recall & 81.0\% &76.0\%& && N/A & N/A \\
 			\hline
+			Phonotrauma recall & 61.0\% &69.6\%&&& N/A& N/A\\
+			\hline
+			Neoplasm recall & 81.1\% & 72.0\%&&& N/A& N/A \\
+			\hline
+			UAR & 76.40\% &72.53\% && & 64.77\% & 60.67\%\\
+			\hline
+			\multicolumn{4}{l}{$^{\mathrm{a}}$ Number of correctly predicted pathological / total pathological}
 		\end{tabular}
 		\label{tab2}
 	\end{center}
 \end{table*}
 
-We have also used Transductive SVM in our previous prediction. TSVMs exploit specific iterative algorithms which gradually search a reliable separating hyperplane (in the kernel space) with a transductive process that incorporates both labeled and unlabeled samples in the training phase[tsvm].
-
-In Table 1, we can see the different results we get after we removed the TSVM from the ensemble. The problem with TSVM is that it can only find 20 ?? normal cases, where there are about 80 normal cases in the actual test data. We do find that after removing the TSVM, we get an inscrease in the number of normal cases detected. However, the classification for pathological classes decreased by about 3 \%. We suspect that the TSVM is good for the disease classification but not for distinguishing if the example is normal or not. 
+Then, we tried another ensemble without the TSVM. We suspect that the there are problems caused by the over calling of normal by it. We changed the TSVM with the SVM-RBF. Then, we see an increase in both the sensitivity and specificity but the UAR decreased. From Table 1, We see that the Sensitivity increased by 7.2\% and Specificity increased by 16.0\%, though the Specificity of SVM-RBF is low, the other methods in the ensemble are able to catch those normal cases. However, there is a 4\% decrease in UAR score. We think that the SVM-RBF works better for distinguishing normal examples from pathological examples but the TSVM might work better for classification the different kinds of diseases. One possible reason might be that the two diseases Phonotrauma and Neoplasm are very close and hard to distinguish for SVM-RBF, we can see from Table 1, that the SVM-RBF only have around 70 \% of recall for both classes.
+ 
