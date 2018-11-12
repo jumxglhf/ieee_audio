@@ -53,11 +53,11 @@ Multiple Instance Learning Regression(MILR):\\
 		\begin{center}
 			\includegraphics[scale=0.35]{Diagram_3.png}
 		\end{center}
-		\caption{Pipeline Ensemble}
+		\caption{The Process of Classifying, including classifier training, ensemble structures and pipeline implementation}
 	\end{figure}
 
 \subsection{Feature Selection:}
-Due to the fact that the size of our training set is relatively small, in case of over-fitting, for each classifier we select 50\% best features, with respect to entropy. However, it seems like feature selection jeopardizes the performance of transductive learning. So we only utilize feature selection on SVM and SVM-RBF.
+Due to the fact that the size of our training set is relatively small, in case of over-fitting, for each classifier we select 50\% best features, with respect to entropy, according to Renyi's feature selection.\cite{b14} However, it seems like feature selection jeopardizes the performance of transductive learning. So we only utilize feature selection on SVM and SVM-RBF.
 
 \subsection{Hyper Parameter Tuning:}
 Since the size of training set is getting smaller and smaller as we propagate through the pipeline, in order to get trustworthy accuracy to tune parameter for SVC, for all three ensembles, we use the same parameter tuned in the first ensemble. The process is pretty straightforward; we simply set up two loops, one of which for C and one of which for gamma. The tuned parameters are 10 for C, and 0.01 for gamma. Also due to the skewed distribution in training set, we modify the class weight with respect to the proportion of class. 
