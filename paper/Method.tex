@@ -48,7 +48,7 @@ Tree-Based Algorithms:
 	Instead of having a single tree structure, Random Forest fits a number of decision tree classifiers on various sub-samples of the dataset.\cite{b7} Using Random Forest classifier, we get 89\% accuracy on CV. But even with such high accuracy, Random Forest performs poorly on test set according to the feedback from oracle. We analyze that the differences on performance between training set and testing set probably result from skewed data distribution and over-fitting. \\
 \end{itemize}
 
-Based on cross validation results on experiments we have done, it seems like tree-based algorithm generally is inappropriate for this learning task. \\
+\indent Based on cross validation results on experiments we have done, it seems like tree-based algorithm generally is inappropriate for this learning task. \\
 
 Support Vector Machines(SVMs):\\
 \begin{itemize}
@@ -72,15 +72,19 @@ Multiple Instance Learning Regression(MILR):\\
 	\item 
 	Instead of receiving a set of instances which are individually labeled, the learner receives a set of labeled bags, each containing many instances. In the simple case of multiple-instance binary classification, a bag may be labeled negative if all the instances in it are negative. On the other hand, a bag is labeled positive if there is at least one instance in it which is positive. \cite{b10} Although MILR undercalls Normal, having super high Area under ROC Curve(AUC) 0.92, MILR could work as an oracle and we only focus on test examples labeled with confidence higher than 85\%.\\
 \end{itemize}
-\subsection{Model Selection:}
+\subsection{Final Architecture Overview:}
 	Our whole model-building infrastructure is based on scikit-learn\cite{b7}\cite{b8}. \\
-	We tried K-Nearest Neighbor, Support Vector Machine, Boosting, Random Forest, Extratrees, Multiple Instance Learning, Label Propagation. After few experiments, it seemed like tree algorithms performed poorly on this task and we finalized our focus on SVM, Label Propagation, SVC and MILR with pipeline. This classifier undercalled Normal and Neoplasm patients, which we think is resulted from different class distributions between training and testing set. So, we converted this relatively complex learning task into three less complicated tasks: Normal vs. Pathological, Vocal vs. Rest of Diseases, and Phonotrauma vs. Neoplasm.[Fig. 1.] The reason why we design the pipeline this way is based on the difficulty of classification. (From easiest Normal vs. Pathological to hardest Phonotrauma vs. Neoplasm)
-	\begin{figure}[htbp]
+	\indent We tried Support Vector Machine, Boosting, Random Forest, Extratrees, Multiple Instance Learning, Label Propagation. After few experiments, it seemed like tree algorithms performed poorly on this task and we finalized our focus on SVM, Label Propagation, SVM-RBF and MILR with pipeline. Any single classifier undercalled Normal and Neoplasm patients, which we think is resulted from different class distributions between training and testing set. \\
+\indent So, we converted this relatively complex learning task into three less complicated tasks: Normal vs. Pathological, Vocal vs. Rest of Diseases, and Phonotrauma vs. Neoplasm, with each learning task having ensemble consisted of 4 classifiers.[Fig. 1] The reason why we design the pipeline this way is based on the difficulty of classification according to our perception. (From easiest Normal vs. Pathological to hardest Phonotrauma vs. Neoplasm)\\
+	\begin{figure}[!htbp]
 		\begin{center}
-			\includegraphics[scale=0.35]{Diagram_1.png}
+			\includegraphics[scale=0.4]{Diagram_2.png}
 		\end{center}
 		\caption{Pipeline Ensemble}
 	\end{figure}
+
+\subsection{Feature Selection:}
+Due to the fact that the size of our training set is relatively small, in case of over-fitting, for each classifier we select 50\% best features, with respect to entropy. However, it seems like feature selection jeopardizes the performance of transductive learning. So we only utilize feature selection on SVM and SVM-RBF.
 
 \subsection{Hyper Parameter Tuning:}
 Since the size of training set is getting smaller and smaller as we propagate through the pipeline, in order to get trustworthy accuracy to tune parameter for SVC, for all three ensembles, we use the same parameter tuned in the first ensemble. The process is pretty straightforward; we simply set up two loops, one of which for C and one of which for gamma. The tuned parameters are 10 for C, and 0.01 for gamma. Also due to the skewed distribution in training set, we modify the class weight with respect to the proportion of class. 
