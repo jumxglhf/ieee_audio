@@ -15,17 +15,17 @@ We are able to detect the normal examples with 79.5\% in the cross validation fo
 			\hline
 			 & SVM CV & SVM-RBF & MILR CV & ensemble & with TSVM & without TSVM \\
 			\hline
-			Sensitivity$^{\mathrm{a}}$  & 88.8 \%& && & 82.2 \% & 89.4 \% \\
+			Sensitivity$^{\mathrm{a}}$  & 88.8\%& 92.1\% && & 82.2 \% & 89.4\% \\
 			\hline
-			Specificity & 79.5 \% &&&& 60.0 \% & 76.0 \% \\
+			Specificity & 79.5\% & 52.0\%&&& 60.0\% & 76.0 \% \\
 			\hline
-			Volcal palsy recall & 81.0 \% && && N/A & N/A \\
+			Volcal palsy recall & 81.0\% &76.0\%& && N/A & N/A \\
 			\hline
-			Phonotrauma recall & 61.0 \% &70.0 \%&&& N/A& N/A\\
+			Phonotrauma recall & 61.0\% &69.6\%&&& N/A& N/A\\
 			\hline
-			Neoplasm recall & 81.1 \% &67.5 \%&&& N/A& N/A \\
+			Neoplasm recall & 81.1\% & 72.0\%&&& N/A& N/A \\
 			\hline
-			UAR & 76.40 \% & && & 64.77 \% & 60.67 \%\\
+			UAR & 76.40\% &72.53\% && & 64.77\% & 60.67\%\\
 			\hline
 			\multicolumn{4}{l}{$^{\mathrm{a}}$ Number of correctly predicted pathological / total pathological}
 		\end{tabular}
@@ -33,5 +33,5 @@ We are able to detect the normal examples with 79.5\% in the cross validation fo
 	\end{center}
 \end{table*}
 
-Then, we tried another ensemble without the TSVM. We suspect that the there are problems caused by the over calling of normal by it. We changed the TSVM with the SVM-RBF. Then, we see n increase in both the sensitivity and specificity but the UAR decreased. From Table 1, we can see that there are 4\% decrease in UAR score. We think that the SVM-RBF works better for distinguishing normal examples from pathological examples but the TSVM might work better for classification the different kinds of diseases. There might be some features that TSVM could capture but the SVM-RBF cannot. One possible reason might be that the two diseases Phonotrauma and Neoplasm are very close and hard to distinguish for SVM-RBF, we can see from Table 1, that the SVM-RBF only have around 70 \% of recall for both classes.
+Then, we tried another ensemble without the TSVM. We suspect that the there are problems caused by the over calling of normal by it. We changed the TSVM with the SVM-RBF. Then, we see an increase in both the sensitivity and specificity but the UAR decreased. From Table 1, We see that the Sensitivity increased by 7.2\% and Specificity increased by 16.0\%, though the Specificity of SVM-RBF is low, the other methods in the ensemble are able to catch those normal cases. However, there is a 4\% decrease in UAR score. We think that the SVM-RBF works better for distinguishing normal examples from pathological examples but the TSVM might work better for classification the different kinds of diseases. One possible reason might be that the two diseases Phonotrauma and Neoplasm are very close and hard to distinguish for SVM-RBF, we can see from Table 1, that the SVM-RBF only have around 70 \% of recall for both classes.
  
