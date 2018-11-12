@@ -1,0 +1,30 @@
+\section{Feature Extraction}
+\begin{itemize}
+	\item Zero Crossing Rate(ZCR):\\
+	The rate of sign-changes of the signal during the duration of a particular frame.\cite{b1}We calculate ZCR by equation: $\frac{1}{T-1}\sum_{t = 1}^{T - 1}(s_t s_{t-1})$ where s is single with length T.\\
+	\item Energy:\\
+	The sum of squares of the signal values, normalized by the respective frame length.\cite{b2} We calculate EE by equation: Energy = $W_{potential} + W_{kinetic} = \int_{V}^{} \frac{p^2}{2p_0c^2} dV + \int_{V}^{} \frac{pv^2}{2}dV$.\\
+	\item Entropy of Energy(EE):\\
+	The entropy of sub-frames' normalized energies. It can be interpreted as a measure of abrupt changes.\cite{b2} Setting number of short blocks n to 10, we calculate EE by equation: EE = $\frac{(\frac{L}{n})^2}{Eol +eps} \log_{2}({(\frac{(\frac{L}{n})^2}{Eol +eps} + eps})$, where L is the length of audio frame, eps is the learning rate and Eol is the total energy of this frame.\\
+	\item Spectral Centroid(SC):\\
+	It indicates where the "center of mass" of the spectrum is located. Perceptually, it has a robust connection with the impression of "brightness" of a sound.\cite{b3} We calculate SC through equation: SC = $\frac{\sum_{n = 0}^{N - 1} f(n)x(x)}{\sum_{n = 0}^{N - 1} x(n)}$, where f(n) is the frequency of current bin and x(n) is weighted frequency value.\\
+	\item Spectral Energy(SE):\cite{b1}\\
+	Entropy of the normalized spectral energies for a set of sub-frames.\cite{b3}. We calculate SE through equation: SE = $\sum_{i = 1}^{N} \frac{1}{N} |X(w_i)|^2$ \\
+	\item Spectral Spread(SS):\\
+	The second central moment of the spectrum.\cite{b3}. With SC, we can calculate SS by equation: SC = $\sqrt{\frac{\sum_{k = 0}^{\frac{N}{2}} (f_k-SC)^2 |X(k)|^2}{\sum_{k = 0}^{\frac{N}{2}} |X(k)|^2 }}$\\
+	\item Spectral Entropy:\\
+	Entropy of the normalized spectral energies for a set of sub-frames.\cite{b3} We calculate Spectral Energy by equation : Spectral Entropy = $-\sum_{i = 1}^{n} \frac{\frac{1}{N} |X(w_i)|^2}{\sum_{i}^{}\frac{1}{N} |X(w_i)|^2} \ln\frac{\frac{1}{N} |X(w_i)|^2}{\sum_{i}^{}\frac{1}{N} |X(w_i)|^2}$.\\
+	\item Spectral Flux:\\
+	The squared difference between the normalized magnitudes of the spectra of the two successive frames.\cite{b3} We calculate Spectral Flux by equation: Spectral Flux = $\int_{\pi_+}^{} I * \cos(\theta(n)) dw(n)$, where I is indicator function of integration that extends only over the solid angles of relevant hemisphere, $\theta(n)$ donates the angle between n and prescribed direction. \\
+	\item Spectral Rolloff:\\
+	The frequency below which 90\% of the magnitude distribution of the spectrum is concentrated.\cite{b3} We calculate Spectral Rolloff through equation : Spectral Rolloff = arg min$\sum_{i = 1}^{f_c} m_i \geq \sum_{i = 1}^{N}0.9 m_i$, where $f_c$ is the rolloff frequency and $m_i$ is the magnitude of the i-th frequency component of the spectrum. \\
+	\item Mel Frequency Cepstral Coefficients(MFCCs):\\
+	Mel Frequency Cepstral Coefficients form a cepstral representation where the frequency bands are not linear but distributed according to the mel-scale.\cite{b4} We calculate MFCC by equation: MFCC = $\sum_{k = 0}^{\frac{N}{2}}\log |s(n)| H_i(k\frac{2\pi}{N_p})$, where N is the frame length, s(n) is DFT signal, $H_i$ is the critical band filter at i-th coefficient, and $N_p$ is the number of points used in the short term DFT.\\
+	\item Chroma Vector:\\
+	A 12-element representation of the spectral energy where the bins represent the 12 equal-tempered pitch classes of western-type music (semitone spacing).\cite{b5} We calculate this by detecting the tone height and chroma of certain segment , and assign each element the vector it falls into.\\
+	\item Chroma Deviation:\\
+	The standard deviation of the 12 chroma coefficients.\cite{b5}\\
+	\item Local Amplitude Minimum:\\
+	The number of local minimum amplitude peaks. We extract this feature by counting the number of frames where its frequency derivative is 0.\\
+\end{itemize}
+First 13 features are widely used in the field of machine learning for audio classification. We utilize an existing library\cite{b6} that implements first those features. The last feature Local Amplitude Minimum is introduced by us to help classifiers distinguishing normal audio and abnormal audio, which turns out to be extremely efficient.
