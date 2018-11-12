@@ -27,4 +27,6 @@
 	\item Local Amplitude Minimum:\\
 	The number of local minimum amplitude peaks. We extract this feature by counting the number of frames where its frequency derivative is 0.\\
 \end{itemize}
+Because we had a very small training set, for the supervised learning algorithms, overfitting was a concern especially later in the pipeline where there were fewer training examples. To reduce this effect, we used mutual information based feature selection~\cite{} for the SVMs (linear and RBF) and trained these models on 50\% of the features.
+
 First 13 features are widely used in the field of machine learning for audio classification. We utilize an existing library\cite{b6} that implements first those features. The last feature Local Amplitude Minimum is introduced by us to help classifiers distinguishing normal audio and abnormal audio, which turns out to be extremely efficient.
