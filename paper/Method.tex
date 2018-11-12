@@ -6,7 +6,7 @@
 	\item Equalizing Loudness:\\
 	We also figured out that ,between training set and testing sets, there is a loudness difference not representative of class label. So, we linearly equalized average loudness of each file by the average loudness of all audio files. \\
 \end{itemize}
-\subsection{Feature Extraction:}
+
 \begin{itemize}
 	\item Zero Crossing Rate(ZCR):\\
 	The rate of sign-changes of the signal during the duration of a particular frame.\cite{b1}We calculate ZCR by equation: $\frac{1}{T-1}\sum_{t = 1}^{T - 1}(s_t s_{t-1})$ where s is single with length T.\\
