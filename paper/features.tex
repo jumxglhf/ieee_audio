@@ -28,6 +28,17 @@ We now describe the feature set that we extract from the given audio files. Thes
 	\item Number of Amplitude Vally and Peak:\\
 	The number of amplitude peaks and vallies. We extract this feature by counting the number of frames where its amplitude derivative is 0. %The mathematical description of this feature is : $ \sum_{t = 1}^{N-1}  I_{dR=0}$, where dR is the derivative of amplitude curve, and N is the total length of this frame.\\
 \end{enumerate}
-Because we had a very small training set, for the supervised learning algorithms, overfitting was a concern especially later in the pipeline where there were fewer training examples. To reduce this effect, we used mutual information based feature selection~\cite{b25} for the SVMs (linear and RBF) and trained these models on 50\% of the features.
+\indent Because we had a very small training set, for the supervised learning algorithms, overfitting was a concern especially later in the pipeline where there were fewer training examples. To reduce this effect, we used mutual information based feature selection~\cite{b25} for the SVMs (linear and RBF) and trained these models on 50\% of the features.
 
-First 13 features are widely used in the field of machine learning for audio classification\cite{b26}\cite{b27}. We utilize an existing library\cite{b6} that implements first those features. The last feature Local Amplitude Minimum is introduced by us to help classifiers distinguishing normal audio and abnormal audio, which turns out to be extremely efficient. According to Renyi's feature selection, our top five most informative features are : MFCC, SC, Number of Amplitude Vally and Peak, Spectral Flux, and ZCR. 
+\indent First 13 features are widely used in the field of machine learning for audio classification\cite{b26}\cite{b27}. We utilize an existing library\cite{b6} that implements first those features. The last feature Local Amplitude Minimum is introduced by us to help classifiers distinguishing normal audio and abnormal audio, which turns out to be extremely efficient. According to Renyi's feature selection, our top five most informative features are : MFCC(3rd to 6th), SC, Number of Amplitude Vally and Peak, Spectral Flux, and ZCR. \\
+Analysis on Why those five features are good
+\begin{itemize}
+	\item MFCCs
+	MFCCs are consisted of 13 feature vectors, and those 13 feature vectors combined are used to represent the spectrum envelop of any signal. 
+	\item ZCR
+	ZCR intuitively represents the rate of which there is a vibration pushing and pulling the air. Normal patients tend to have a very low ZCR(around 5\%), but pathological patients comparably have a higher ZCR(around 10\% to 30\%)
+	\item Spectral Centroid 
+	SC describes the location of where the center of mass of a spectrum is. For this particular learning task, pathological patients could have very skewed SC; whereas normal patients have Centroid relatively close to the middle of the signal. Nevertheless, patients with different diseases could have different centroid locations.  
+	\item Spectral Flux
+	Spectral Flux intuitively represents how fast the the power spectrum of a signal is changing. Normal patients tend to have lower flux because they can successively talk without much vibration, but pathological patients tend to have higher flux because making smooth sound for them is impossible. 
+\end{itemize}
