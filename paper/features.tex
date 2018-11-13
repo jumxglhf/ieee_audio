@@ -2,13 +2,13 @@
 We now describe the feature set that we extract from the given audio files. These features are used with the classifiers above. Many of these features are widely used in machine learning for audio classification~\cite{b26,b27}. We added the last feature, ``Number of Amplitude Peaks and Valleys." The features are:
 \begin{enumerate}
 	\item Zero Crossing Rate (ZCR):\\
-	The rate of sign-changes of the signal during the duration of a particular frame~\cite{b1}: $ZCR=\frac{1}{T-1}\sum_{t = 1}^{T - 1}I_{R<0}$, where $R = (s_t * s_{t-1})$ and $s$ is signal with length $T$.
+	The rate of sign-changes of the signal during the duration of a particular frame~\cite{b1}: $ZCR=\frac{1}{T-1}\sum_{t = 1}^{T - 1}I_{R<0}$, where $R = (s_t \cdot s_{t-1})$ and $s$ is signal with length $T$.
 	\item Energy:\\
 	The sum of squares of the signal values, normalized by the respective frame length~\cite{b2}: $Energy = \sum_{i = 1}^{N} \frac{s_i^2}{|s_i|} $, where $N$ is the total number of blocks of signals and, $s_i$ is the signal in frame $i$.
 	\item Entropy of Energy (EE):\\
-	The entropy of sub-frames' normalized energies. It can be interpreted as a measure of abrupt changes.~\cite{b2} Setting number of sub-frames $n$ to $10$, we calculate EE by: EE = $\frac{(\frac{L}{n})^2}{Eol +\epsilon} \log_{2}({(\frac{(\frac{L}{n})^2}{Eol +eps} + eps})$, where $L$ is the length of audio signal, $\epsilon$ is the learning rate and $Eol$ is the total energy of this signal.
+	The entropy of sub-frames' normalized energies. It can be interpreted as a measure of abrupt changes.~\cite{b2} Setting number of sub-frames $n$ to $10$, we calculate EE by: EE = $\frac{(\frac{L}{n})^2}{Eol +\epsilon} \log_{2}({(\frac{(\frac{L}{n})^2}{Eol +\epsilon} + \epsilon})$, where $L$ is the length of audio signal, $\epsilon$ is a small constant and $Eol$ is the total energy of this signal.
 	\item Spectral Centroid (SC):\\
-	It indicates where the "center of mass" of the spectrum is located. Perceptually, it has a robust connection with the impression of "brightness" of a sound~\cite{b3}:  $SC = \frac{\sum_{n = 0}^{N - 1} f(n)x(n)}{\sum_{n = 0}^{N - 1} x(n)}$, where $f(n)$ is the frequency of current bin and $x(n)$ is weighted frequency value.
+	It indicates where the ``center of mass" of the spectrum is located. Perceptually, it has a robust connection with the impression of ``brightness" of a sound~\cite{b3}:  $SC = \frac{\sum_{n = 0}^{N - 1} f(n)x(n)}{\sum_{n = 0}^{N - 1} x(n)}$, where $f(n)$ is the frequency of current bin and $x(n)$ is weighted frequency value.
 	\item Spectral Energy (SE):\\
 	Entropy of the normalized spectral energies for a set of sub-frames.~\cite{b3}: $SE = \sum_{i = 1}^{N} \frac{1}{N} |x(s_i)|^2$, where $x(s_i)$ is the average amplitude of sub-frame $s_i$.
 	\item Spectral Spread (SS):\\
