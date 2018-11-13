@@ -16,11 +16,11 @@ We now describe the feature set that we extract from the given audio files. Thes
 	\item Spectral Entropy:\\
 	Entropy of the normalized spectral energies for a set of sub-frames\cite{b3}: $SpEn = -\sum_{i = 1}^{n} \frac{\frac{1}{N} |x(s_i)|^2}{\sum_{i}^{}\frac{1}{N} |x(s_i)|^2} \ln\frac{\frac{1}{N} |x(s_i)|^2}{\sum_{i}^{}\frac{1}{N} |x(s_i)|^2}$.
 	\item Spectral Flux:\\
-	The squared difference between the normalized magnitudes of the spectra of the two successive frames~\cite{b3} We calculate Spectral Flux by equation: Spectral Flux = $\int_{\pi_+}^{} I * \cos(\theta(n)) dw(n)$, where I is indicator function of integration that extends only over the solid angles of relevant hemisphere, $\theta(n)$ denotes the angle between n and prescribed direction. More intuitively, this feature describes envelope of the spectrum of a signal.
+	The squared difference between the normalized magnitudes of the spectra of the two successive frames.~\cite{b3} 
 	\item Spectral Rolloff:\\
 	The frequency below which 90\% of the magnitude distribution of the spectrum is concentrated~\cite{b3}: $SpRo = \arg \min \sum_{i = 1}^{f_c} m_i \geq \sum_{i = 1}^{N}0.9 m_i$, where $f_c$ is the rolloff frequency and $m_i$ is the magnitude of the $i^{th}$ frequency component of the spectrum. 
 	\item Mel Frequency Cepstral Coefficients(MFCCs):\\
-	Mel Frequency Cepstral Coefficients form a cepstral representation where the frequency bands are not linear but distributed according to the mel-scale.~\cite{b4}:  $MFCC = \sum_{k = 0}^{\frac{N}{2}}\log |s(n)| H_i(k\frac{2\pi}{N_p})$, where $N$ is the frame length, $s(n)$ is Discrete Fourier transform signal, $H_i$ is the critical band filter at $i^{th}$ coefficient, and $N_p$ is the number of points used in the short term Discrete Fourier transform. More detailed description of MFCC can be found in~\cite{b9}.
+	Mel Frequency Cepstral Coefficients form a cepstral representation where the frequency bands are not linear but distributed according to the mel-scale.~\cite{b4} A more detailed description of MFCC can be found in~\cite{b9}.
 	\item Chroma Vector:\\
 	A 12-element representation of the spectral energy where the bins represent the 12 equal-tempered pitch classes of western-type music (semitone spacing).\cite{b5} We calculate this by detecting the tone height and chroma of certain segment, and assign each element the vector it falls into.
 	\item Chroma Deviation:\\
