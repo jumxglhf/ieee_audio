@@ -5,6 +5,13 @@
 
 The challenge as described was clearly separated into two phases. First, we needed to classify the given audio samples into normal or pathological. Then, the pathological samples were to be classified into one of three kinds: vocal palsy, phonotrauma or neoplasm. Upon an initial inspection and analysis of the data, we observed that vocal palsy seemed the easiest to tell apart from normal by listening to the samples. Therefore, we decided upon a pipeline based approach (Figure~\ref{fig:pipeline}). In the pipeline, after preprocessing, we first check if a new sample is normal or not. If a sample is classified as abnormal, it is sent to the second stage, where we decide if it is a sample corresponding to vocal palsy. If this stage returns negative, we proceed to the final stage where the sample is assigned a label corresponding to either phonotrauma or neoplasm. An advantage of this approach instead of a simple multiclass approach is that, by eliminating many samples for consideration by the later stages of the pipeline, we may hope to improve accuracy over classifying everything at once. On the other hand, this approach leaves the most ``confusing" examples for the last classifier, and since we do not have the option of returning an ``I don't know" label, it may be that our phonotrauma vs neoplasm classifier could have a lower accuracy.
 
+\begin{figure}[tb]
+		\begin{center}
+			\includegraphics[scale=0.35]{Diagram_3.png}
+		\end{center}
+		\caption{Classification Pipeline. After preprocessing, feature extraction and selection, we train three ensembles: normal vs pathological, vocal palsy vs other disease, phonotrauma vs neoplasm.}
+		\label{fig:pipeline}
+	\end{figure}
 The next consideration was the algorithm to use as a classifier in each stage. Recent machine learning systems and competitions~\cite{b20,b21} have shown that ensemble approaches are often the best at solving complex problems. This is because typically, a diverse ensemble of classifiers can have elements that each focus on a different aspect of the problem so that when results are combined, the entire system does well. We also chose to follow this principle in designing our classifiers. 
 
 The next question to answer was how to design our ensemble. Rather than going with an off-the-shelf approach, we chose to build an ensemble that was customized to the problem. In particular, we decided to select our ensemble classifiers from three different paradigms: supervised, semi-supervised and multiple-instance learning. The choice of supervised learners was obvious since this task was set up as a batch supervised problem. However, the challenge organizers also provided an unlabeled test set, which was twice the size of the training set. We realized that this could be used as additional information during training. This was especially the case since (as we describe later) we found that doing well on the training set  using cross validation did not guarantee good results on the test set. Therefore we added a semi-supervised component~\cite{b18} which could use the unlabeled test data during learning. Finally, the task as described can also be formulated as a multiple-instance (MI) problem. In MI learning, an example is described by a {\em set} (called a bag) of feature vectors. If an example is labeled positive, at least one instance in the bag is positive; if it is negative, all instances are negative. The task is to learn a bag or instance classifier from such data. In the given task, suppose we partition the given audio samples into windows of some time intervals. Then, we argue that if a voice sample exhibits vocal palsy, or phonotrauma, or neoplasm, {\em there must be at least one window} which contains a signal of that abnormality. Conversely, if a sample is normal, no window contains any abnormality. Therefore this maps well onto the MI learning task. This approach may perform better than analyzing the entire sample because it is possible for most of a sample to be ``normal" even though the patient has a disease. ``Focusing" on a specific fragment of a sample may therefore be better than considering the sample as a whole.
@@ -33,6 +40,8 @@ To combine the output of these ensembles, we use the following strategy. Initial
 
 We also considered stratifying our models based on gender. Some prior work~\cite{b9} suggests that features may have different distributions in men and women and so there may be value in training separate models. However, we had limited training data and further subdividing it to train gender-specific models did not seem feasible.
 
+	
+	
 \subsection{Data Preprocessing, Implementation and Validation}
 A check on the data showed that there was a period of silence at the beginning of most audio files. We removed these parts by calculating the average loudness of each audio file, and removing the prefix of the file that was below  30\% of the average loudness. No other preprocessing was performed on the given data.
 
@@ -83,13 +92,7 @@ The SVM classifiers have hyperparameters that need to be tuned. Since the size o
 	% \indent We tried Support Vector Machine, Boosting, Random Forest, Extratrees, Multiple Instance Learning, Label Propagation. After few experiments, it seemed like tree algorithms performed poorly on this task and we finalized our focus on SVM, Label Propagation, SVM-RBF and MILR with pipeline. Any single classifier undercalled Normal and Neoplasm patients, which we think is resulted from different class distributions between training and testing set. \\
 % \indent So, we converted this relatively complex learning task into three less complicated tasks: Normal vs. Pathological, Vocal vs. Rest of Diseases, and Phonotrauma vs. Neoplasm, with each learning task having ensemble consisted of 4 classifiers.[Fig. 1] The reason why we design the pipeline this way is based on the difficulty of classification according to our perception. (From easiest Normal vs. Pathological to hardest Phonotrauma vs. Neoplasm)\\
 
-	\begin{figure}[!htbp]
-		\begin{center}
-			\includegraphics[scale=0.35]{Diagram_3.png}
-		\end{center}
-		\caption{The Process of Classifying, including classifier training, ensemble structures and pipeline implementation}
-		\label{fig:pipeline}
-	\end{figure}
+
 
 % \subsection{Feature Selection:}
 % Due to the fact that the size of our training set is relatively small, in case of over-fitting, for each classifier we select 50\% best features, with respect to entropy, according to Renyi's feature selection.\cite{b14} However, it seems like feature selection jeopardizes the performance of transductive learning. So we only utilize feature selection on SVM and SVM-RBF.

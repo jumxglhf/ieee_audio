@@ -29,7 +29,7 @@ We now describe the feature set that we extract from the given audio files. Thes
 	We extract this feature by counting the number of frames where the amplitude derivative is 0. %The mathematical description of this feature is : $ \sum_{t = 1}^{N-1}  I_{dR=0}$, where dR is the derivative of amplitude curve, and N is the total length of this frame.
 \end{enumerate}
 
-Each feature is represented by a mean and standard deviation over the signal, giving us a total of 68 features. 
+We have a total of 35 features. For MI/LR, we also added the standard deviation over the signal, giving us a total of 68 features. 
 Because we had a very small training set, for the supervised learning algorithms, overfitting was a concern especially later in the pipeline where there were fewer training examples. To reduce this effect, we used mutual information based feature selection~\cite{b25} for the SVMs (linear and RBF) and trained these models on the top 50\% of the features.
 
 % \indent First 13 features are widely used in the field of machine learning for audio classification\cite{b26}\cite{b27}. We utilize an existing library\cite{b6} that implements first those features. The last feature Local Amplitude Minimum is introduced by us to help classifiers distinguishing normal audio and abnormal audio, which turns out to be extremely efficient. The total number of features we have is 35, 8 of which are spectral related, 13 of which are MFCCs, 13 of them are chroma related features , and last one is the number of amplitude valley and peaks. According to Renyi's feature selection, our top five most informative features are : MFCC(3rd to 6th), SC, Number of Amplitude Vally and Peak, Spectral Flux, and ZCR. \\
