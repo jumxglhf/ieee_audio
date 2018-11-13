@@ -1,5 +1,5 @@
 \section{Feature Extraction}
-We now describe the feature set that we extract from the given audio files. These features are used with the classifiers above. Many of these features are widely used in machine learning for audio classification. The last feature, ``Number of Amplitude Peaks and Vallies" is created by us. The features are:
+We now describe the feature set that we extract from the given audio files. These features are used with the classifiers above. Many of these features are widely used in machine learning for audio classification~\cite{b26,b27}. We added the last feature, ``Number of Amplitude Peaks and Valleys." The features are:
 \begin{enumerate}
 	\item Zero Crossing Rate (ZCR):\\
 	The rate of sign-changes of the signal during the duration of a particular frame~\cite{b1}: $ZCR=\frac{1}{T-1}\sum_{t = 1}^{T - 1}I_{R<0}$, where $R = (s_t * s_{t-1})$ and $s$ is signal with length $T$.
@@ -10,9 +10,9 @@ We now describe the feature set that we extract from the given audio files. Thes
 	\item Spectral Centroid (SC):\\
 	It indicates where the "center of mass" of the spectrum is located. Perceptually, it has a robust connection with the impression of "brightness" of a sound~\cite{b3}:  $SC = \frac{\sum_{n = 0}^{N - 1} f(n)x(n)}{\sum_{n = 0}^{N - 1} x(n)}$, where $f(n)$ is the frequency of current bin and $x(n)$ is weighted frequency value.
 	\item Spectral Energy (SE):\\
-	Entropy of the normalized spectral energies for a set of sub-frames.~\cite{b3}: $SE = \sum_{i = 1}^{N} \frac{1}{N} |x(s_i)|^2$, where $x(s_i)$ is the average amplitude of sub-frame $s_i$.\\
+	Entropy of the normalized spectral energies for a set of sub-frames.~\cite{b3}: $SE = \sum_{i = 1}^{N} \frac{1}{N} |x(s_i)|^2$, where $x(s_i)$ is the average amplitude of sub-frame $s_i$.
 	\item Spectral Spread (SS):\\
-	The second central moment of the spectrum~\cite{b3}:  SS = $\sqrt{\frac{\sum_{k = 0}^{\frac{N}{2}} (f(k)-SC)^2 |x(k)|^2}{\sum_{k = 0}^{\frac{N}{2}} |x(k)|^2 }}$, where f(k) is the frequency at k, N is the total length of the frame and x(k) os weighted frequency value \\
+	The second central moment of the spectrum~\cite{b3}:  SS = $\sqrt{\frac{\sum_{k = 0}^{\frac{N}{2}} (f(k)-SC)^2 |x(k)|^2}{\sum_{k = 0}^{\frac{N}{2}} |x(k)|^2 }}$, where $f(k)$ is the frequency at $k$, $N$ is the total length of the frame and $x(k)$ is the weighted frequency value.
 	\item Spectral Entropy:\\
 	Entropy of the normalized spectral energies for a set of sub-frames\cite{b3}: $SpEn = -\sum_{i = 1}^{n} \frac{\frac{1}{N} |x(s_i)|^2}{\sum_{i}^{}\frac{1}{N} |x(s_i)|^2} \ln\frac{\frac{1}{N} |x(s_i)|^2}{\sum_{i}^{}\frac{1}{N} |x(s_i)|^2}$.
 	\item Spectral Flux:\\
@@ -20,25 +20,27 @@ We now describe the feature set that we extract from the given audio files. Thes
 	\item Spectral Rolloff:\\
 	The frequency below which 90\% of the magnitude distribution of the spectrum is concentrated~\cite{b3}: $SpRo = \arg \min \sum_{i = 1}^{f_c} m_i \geq \sum_{i = 1}^{N}0.9 m_i$, where $f_c$ is the rolloff frequency and $m_i$ is the magnitude of the $i^{th}$ frequency component of the spectrum. 
 	\item Mel Frequency Cepstral Coefficients(MFCCs):\\
-	Mel Frequency Cepstral Coefficients form a cepstral representation where the frequency bands are not linear but distributed according to the mel-scale.~\cite{b4} A more detailed description of MFCC can be found in~\cite{b9}.
+	Mel Frequency Cepstral Coefficients are a 13-element vector that form a cepstral representation where the frequency bands are not linear but distributed according to the mel-scale.~\cite{b4} A more detailed description of MFCC can be found in~\cite{b9}.
 	\item Chroma Vector:\\
 	A 12-element representation of the spectral energy where the bins represent the 12 equal-tempered pitch classes of western-type music (semitone spacing).\cite{b5} We calculate this by detecting the tone height and chroma of certain segment, and assign each element the vector it falls into.
 	\item Chroma Deviation:\\
 	The standard deviation of the 12 chroma coefficients.~\cite{b5}
-	\item Number of Amplitude Valley and Peak:\\
-	The number of amplitude peaks and vallies. We extract this feature by counting the number of frames where its amplitude derivative is 0. %The mathematical description of this feature is : $ \sum_{t = 1}^{N-1}  I_{dR=0}$, where dR is the derivative of amplitude curve, and N is the total length of this frame.\\
+	\item Number of Amplitude Valleys and Peaks:\\
+	We extract this feature by counting the number of frames where the amplitude derivative is 0. %The mathematical description of this feature is : $ \sum_{t = 1}^{N-1}  I_{dR=0}$, where dR is the derivative of amplitude curve, and N is the total length of this frame.
 \end{enumerate}
-\indent Because we had a very small training set, for the supervised learning algorithms, overfitting was a concern especially later in the pipeline where there were fewer training examples. To reduce this effect, we used mutual information based feature selection~\cite{b25} for the SVMs (linear and RBF) and trained these models on 50\% of the features.
 
-\indent First 13 features are widely used in the field of machine learning for audio classification\cite{b26}\cite{b27}. We utilize an existing library\cite{b6} that implements first those features. The last feature Local Amplitude Minimum is introduced by us to help classifiers distinguishing normal audio and abnormal audio, which turns out to be extremely efficient. The total number of features we have is 35, 8 of which are spectral related, 13 of which are MFCCs, 13 of them are chroma related features , and last one is the number of amplitude valley and peaks. According to Renyi's feature selection, our top five most informative features are : MFCC(3rd to 6th), SC, Number of Amplitude Vally and Peak, Spectral Flux, and ZCR. \\
-Analysis on Why those five features are good
-\begin{itemize}
-	\item MFCCs
-	MFCCs are consisted of 13 feature vectors, and those 13 feature vectors combined are used to represent the spectrum envelop of any signal. 
-	\item ZCR
-	ZCR intuitively represents the rate of which there is a vibration pushing and pulling the air. Normal patients tend to have a very low ZCR(around 5\%), but pathological patients comparably have a higher ZCR(around 10\% to 30\%)
-	\item Spectral Centroid 
-	SC describes the location of where the center of mass of a spectrum is. For this particular learning task, pathological patients could have very skewed SC; whereas normal patients have Centroid relatively close to the middle of the signal. Nevertheless, patients with different diseases could have different centroid locations.  
-	\item Spectral Flux
-	Spectral Flux intuitively represents how fast the the power spectrum of a signal is changing. Normal patients tend to have lower flux because they can successively talk without much vibration, but pathological patients tend to have higher flux because making smooth sound for them is impossible. 
-\end{itemize}
+Each feature is represented by a mean and standard deviation over the signal, giving us a total of 68 features. 
+Because we had a very small training set, for the supervised learning algorithms, overfitting was a concern especially later in the pipeline where there were fewer training examples. To reduce this effect, we used mutual information based feature selection~\cite{b25} for the SVMs (linear and RBF) and trained these models on the top 50\% of the features.
+
+% \indent First 13 features are widely used in the field of machine learning for audio classification\cite{b26}\cite{b27}. We utilize an existing library\cite{b6} that implements first those features. The last feature Local Amplitude Minimum is introduced by us to help classifiers distinguishing normal audio and abnormal audio, which turns out to be extremely efficient. The total number of features we have is 35, 8 of which are spectral related, 13 of which are MFCCs, 13 of them are chroma related features , and last one is the number of amplitude valley and peaks. According to Renyi's feature selection, our top five most informative features are : MFCC(3rd to 6th), SC, Number of Amplitude Vally and Peak, Spectral Flux, and ZCR. \\
+% Analysis on Why those five features are good
+% \begin{itemize}
+	% \item MFCCs
+	% MFCCs are consisted of 13 feature vectors, and those 13 feature vectors combined are used to represent the spectrum envelop of any signal. 
+	% \item ZCR
+	% ZCR intuitively represents the rate of which there is a vibration pushing and pulling the air. Normal patients tend to have a very low ZCR(around 5\%), but pathological patients comparably have a higher ZCR(around 10\% to 30\%)
+	% \item Spectral Centroid 
+	% SC describes the location of where the center of mass of a spectrum is. For this particular learning task, pathological patients could have very skewed SC; whereas normal patients have Centroid relatively close to the middle of the signal. Nevertheless, patients with different diseases could have different centroid locations.  
+	% \item Spectral Flux
+	% Spectral Flux intuitively represents how fast the the power spectrum of a signal is changing. Normal patients tend to have lower flux because they can successively talk without much vibration, but pathological patients tend to have higher flux because making smooth sound for them is impossible. 
+% \end{itemize}

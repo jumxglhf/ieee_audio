@@ -29,14 +29,14 @@ S_{ij}=\Pr(y_{ij}=1|B_{ij})=\frac{1}{1+e^{-({\bf w}\cdot
 \end{eqnarray}
 Note that here, the softmax function encodes the MI assumption that labels a bag positive if at least one instance in it is positive.
 
-To combine the output of these ensembles, we use the following strategy. Initial testing showed that MI/LR had a very high cross-validated area under the ROC graph (AUC) score, sometimes exceeding $0.9$. Therefore we combine the outputs of the predictors as follows: a sample is labeled positive if MI/LR's conditional probability exceeds $0.85$, and negative if the conditional probability is below $0.15$. If the conditional probability lies between these values, then we return a majority vote of the elements of the ensemble.
+To combine the output of these ensembles, we use the following strategy. Initial testing showed that MI/LR had a very high cross-validated area under the ROC graph (AUC) score, sometimes exceeding $0.9$. Therefore we combine the outputs of the predictors as follows: a sample is labeled positive if MI/LR's conditional probability exceeds $0.85$, and negative if the conditional probability is below $0.15$. If the conditional probability lies between these values, or if MI/LR was not in the ensemble, then we return a majority vote of the elements of the ensemble.
 
 We also considered stratifying our models based on gender. Some prior work suggests that features may have different distributions in men and women and so there may be value in training separate models. However, we had limited training data and further subdividing it to train gender-specific models did not seem feasible.
 
 \subsection{Data Preprocessing, Implementation and Validation}
 A check on the data showed that there was a period of silence at the beginning of most audio files. We removed these parts by calculating the average loudness of each audio file, and removing the prefix of the file that was below  30\% of the average loudness. No other preprocessing was performed on the given data.
 
-All of our algorithms and features were implemented in Python. We used the libraries Scikit-learn \cite{b17}, pyAudioAnalysis\cite{b6}, TSVM\cite{b23}\cite{b24} . 
+Most of our algorithms and features were implemented in Python. We used the libraries Scikit-learn~\cite{b17}, pyAudioAnalysis~\cite{b6} and TSVM~\cite{b23,b24} in our implementation. The MI/LR implementation was done in Java.
 
 Our internal experimentation on the training sets with the supervised and multiple-instance algorithms were performed using 5-fold cross validation. We used these experiments to pick the supervised algorithms to use in our ensemble. We also tried using other approaches such as decision trees and random forests, but they did not perform well on our data.
 
