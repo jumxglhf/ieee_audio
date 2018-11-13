@@ -31,7 +31,7 @@ Note that here, the softmax function encodes the MI assumption that labels a bag
 
 To combine the output of these ensembles, we use the following strategy. Initial testing showed that MI/LR had a very high cross-validated area under the ROC graph (AUC) score, sometimes exceeding $0.9$. Therefore we combine the outputs of the predictors as follows: a sample is labeled positive if MI/LR's conditional probability exceeds $0.85$, and negative if the conditional probability is below $0.15$. If the conditional probability lies between these values, or if MI/LR was not in the ensemble, then we return a majority vote of the elements of the ensemble.
 
-We also considered stratifying our models based on gender. Some prior work suggests that features may have different distributions in men and women and so there may be value in training separate models. However, we had limited training data and further subdividing it to train gender-specific models did not seem feasible.
+We also considered stratifying our models based on gender. Some prior work~\cite{b9} suggests that features may have different distributions in men and women and so there may be value in training separate models. However, we had limited training data and further subdividing it to train gender-specific models did not seem feasible.
 
 \subsection{Data Preprocessing, Implementation and Validation}
 A check on the data showed that there was a period of silence at the beginning of most audio files. We removed these parts by calculating the average loudness of each audio file, and removing the prefix of the file that was below  30\% of the average loudness. No other preprocessing was performed on the given data.
