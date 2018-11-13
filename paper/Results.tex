@@ -36,27 +36,27 @@ From Table~\ref{tab:2}, we can see some of these works well such as Label Propag
 \begin{table*}[!htbp]
 	\caption{NUMBER OF NORMAL EXAMPLES PREDICTED IN TEST CASES}
 	\begin{center}
-		\begin{tabular}{|c|c|}
+		\begin{tabular}{|c|c|c|c|c|}
 			\hline
-			& Number of Normal \\
+			& Number of Normal & Number of Vocal Paralysis & Number of Phonotrauma & Number of Neoplasm \\
 			\hline
-			SVM & 56\\
+			SVM & 56 & 72 &158&52 \\
 			\hline
-			SVM-With Feature Selection & 65\\
+			SVM-With Feature Selection & 65 & 107 & 178  & 59 \\
 			\hline
-			SVM-RBF & 84 \\
+			SVM-RBF & 84 & 89 &184 & 53 \\
 			\hline
-			MILR & 257 \\
+			MILR & 257 & N/A & N/A& N/A\\
 			\hline
-			Label Propagation & 69 \\
+			Label Propagation & 69 & 78&156 & 54 \\
 			\hline
-			TSVM & 261 \\
+			TSVM & 261 &193&77&133\\
 			\hline
-			Ensemble with TSVM & 93\\
+			Ensemble with TSVM & 93&97&144&66\\
 			\hline
-			Ensemble with SVM-RBF & 74\\
+			Ensemble with SVM-RBF & 74&89&184&53\\
 			\hline
-			Actual Normal Cases& 122 \\
+			Actual Numbers& 122&N/A&N/A&N/A \\
 			\hline
 		\end{tabular}
 		\label{tab:2}
