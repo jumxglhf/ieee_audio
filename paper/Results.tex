@@ -1,19 +1,10 @@
 \section{Results \& Discussion}
-
-
-We have several different kinds of models including TSVM, SVM, Label Propagation and MILR in our ensemble. 
-
-Table~\ref{tab:1} compares the cross validation results for different models on training set and the results we get for the test samples. We tried one ensemble without the TSVM. We suspect that the there are problems caused by the over calling of normal by TSVM. Then, we changed the TSVM to SVM-RBF. We see an increase in both the sensitivity and specificity but the UAR decreased: the Sensitivity increased by 7.2\% and Specificity increased by 16.0\%, though the Specificity of SVM-RBF is low, the other methods in the ensemble are able to catch those normal cases. However, there is a 4\% decrease in UAR score. We think that the SVM-RBF works better for distinguishing normal examples from pathological examples but the TSVM might work better for classification the different kinds of diseases. One possible reason might be that the two diseases Phonotrauma and Neoplasm are very close and hard to distinguish for SVM-RBF, we can see from Table 1, that the SVM-RBF only have around 70 \% of recall for both classes.
-
-From Table~\ref{tab:2}, we can see some of these works well such as Label Propagation, it is able to detect 69 normal cases, but the MILR is capturing far more normal cases, 257, even with threshold 85\%. There is the same problem with the TSVM, which finds 261 normal cases. However, there is a very high Area under ROC graph for MILR, 0.96, for the training set. It seems that it is difficult to detect the normal cases. So we think that there might be some mismatches between the testing examples and training examples, probably there are some features that are not included in the training examples but appeared in the testing files. For the three different kinds of SVM, it seems that they are all somewhat under calling the normal cases, but the SVM-RBF seems to work pretty well. It is able to find 84 normal samples. The overall ensemble seems to get much closer to the real number of normal samples. The different methods in the ensemble are able to learn different aspects of the samples, which will work better than a single method.
-
-
-\begin{table*}[!htbp]
+\begin{table*}[htbp]
 	\caption{CROSS VALIDATION AND ACTUAL RESULT}
 	\begin{center}
 		\begin{tabular}{|c|c|c|c|c|c|}
 			\hline
-			 & SVM CV & SVM-RBF CV & MILR CV & with TSVM & with SVM-RBF \\
+			 & SVM CV & SVM-RBF CV & MILR CV & Oct 15 result & Nov 1 result \\
 			\hline
 			Sensitivity$^{\mathrm{a}}$  & 88.8\%& 92.1\% & 62.0\% & 82.2 \% & 89.4\% \\
 			\hline
@@ -33,7 +24,7 @@ From Table~\ref{tab:2}, we can see some of these works well such as Label Propag
 	\end{center}
 \end{table*}
 
-\begin{table*}[!htbp]
+\begin{table*}[htbp]
 	\caption{NUMBER OF NORMAL EXAMPLES PREDICTED IN TEST CASES}
 	\begin{center}
 		\begin{tabular}{|c|c|c|c|c|}
@@ -56,11 +47,43 @@ From Table~\ref{tab:2}, we can see some of these works well such as Label Propag
 			\hline
 			Ensemble with SVM-RBF & 74&89&184&53\\
 			\hline
-			Actual Numbers& 122&N/A&N/A&N/A \\
+			Actual Numbers (Estimated)& 122&N/A&N/A&N/A  \\
 			\hline
 		\end{tabular}
 		\label{tab:2}
 	\end{center}
 \end{table*}
+
+From our feature selection experiments, we found that the most important features for this task were the MFCC coefficients (3rd to 6th), SC, Number of Amplitude Valleys and Peaks, Spectral Flux, and ZCR. These are generally intuitive. MFCC is well-known to be useful for this task. Most of the other features represent the ``smoothness" of the signal in some way. For example, Spectral Flux intuitively represents how fast the the power spectrum of a signal is changing. Number of Amplitude Peaks and Valleys represents achanges in the amplitude of the signal. Normal subjects may tend to have lower values of such features because they can speak continuously without much disruption, while pathological samples tend to have higher values. SC describes the location of where the center of mass of a spectrum is. For this particular learning task, it is possible that each of the classes (normal, neoplasm, vocal palsy and phonotrauma) have a different SC location. Similarly,  normal samples tend to have a low ZCR(around 5\%), but pathological samples tend to have a higher ZCR (around 10\% to 30\%).
+
+Table~\ref{tab:1} compares the cross validation results for different models on training set and the results we get for the test samples in our two submissions on Oct 15 and Nov 1 (the final submission on Nov 10 was not yet scored as of this writing). The difference between these submissions was that for Oct 15, we used the TSVM in all of our ensembles, and MI/LR was not used. Our Nov 1 submission used the pipeline as shown in Figure~\ref{fig:pipeline}. This change increased both our sensitivity and specificity significantly: sensitivity increased by 7.2\% and specificity increased by 16.0\%.  Table~\ref{tab:2} shows the number of predicted normal samples by the different elements of our ensemble. From this table, we see that TSVM was overcalling normal samples significantly. While it may appear the MI/LR has a similar issue, we found that the MI/LR AUC was very high in cross validation (generally exceeding $0.9$). This means that the default threshold for classification, $0.5$, is too low for this classifier, and if we look at the very high or low confidence predictions, they are likely to be correct. This change helps significantly with our sensitivity and specificity.
+
+At the same time, we find that removing the TSVM from the ensemble decreased our UAR score by 4\%. This indicates that the TSVM may have better recall for the individual classes than other elements of the ensemble. One possibility is that since the TSVM uses a heuristic strategy to solve a hard optimization problem, as the size of the problem becomes smaller and there is less degrees of freedom it can find a more accurate solution. Therefore, in our final attempt, we reinstituted the TSVM but only in the later stages of our pipeline. The results are pending. It is useful to note that our pipeline architecture makes it easy to make such changes.
+
+Our first attempts to solve this task used purely supervised methods like the linear SVM. As can be seen from Table~\ref{tab:1}, this approach produced good sensitivity and specificity scores in cross validation. However, the returned scores on the test data were low. This pattern repeated itself with other experiments; our cross validation results generally over-estimated the performance of our approaches on the test data. The numbers in Table~\ref{tab:2} indicate that several methods were systematically undercalling the ``normal" class in the test set. This indicates that there is some unknown difference between the training and test distributions so that the results did not generalize in the expected manner. It could also be the effect of a very small training sample, which meant that our cross validation test sets were also small. This influenced our decision to add semi-supervised methods to our ensemble.
+
+The advantage of using an ensemble method can be seen from Tables~\ref{tab:1} and~\ref{tab:2}. The different approaches we use have quite different properties and do well on different subclasses of the data. For example, the specificity of SVM-RBF is low, but sensitivity is high. It is better than the linear kernel at capturing Phonotrauma but worse at neoplasm. When we combine these approaches, the resulting ensemble has good properties overall.
+
+
+
+% We have several different kinds of models including TSVM, SVM, Label Propagation and MILR in our ensemble. 
+
+% Table~\ref{tab:1} compares the cross validation results for different models on training set and the results we get for the test samples. We tried one ensemble without the TSVM. We suspect that the there are problems caused by the over calling of normal by TSVM. Then, we changed the TSVM to SVM-RBF. We see an increase in both the sensitivity and specificity but the UAR decreased: the Sensitivity increased by 7.2\% and Specificity increased by 16.0\%, though the Specificity of SVM-RBF is low, the other methods in the ensemble are able to catch those normal cases. However, there is a 4\% decrease in UAR score. We think that the SVM-RBF works better for distinguishing normal examples from pathological examples but the TSVM might work better for classification the different kinds of diseases. One possible reason might be that the two diseases Phonotrauma and Neoplasm are very close and hard to distinguish for SVM-RBF, we can see from Table 1, that the SVM-RBF only have around 70 \% of recall for both classes.
+
+% From Table~\ref{tab:2}, we can see some of these works well such as Label Propagation, it is able to detect 69 normal cases, but the MILR is capturing far more normal cases, 257, even with threshold 85\%. There is the same problem with the TSVM, which finds 261 normal cases. However, there is a very high Area under ROC graph for MILR, 0.96, for the training set. It seems that it is difficult to detect the normal cases. So we think that there might be some mismatches between the testing examples and training examples, probably there are some features that are not included in the training examples but appeared in the testing files. For the three different kinds of SVM, it seems that they are all somewhat under calling the normal cases, but the SVM-RBF seems to work pretty well. It is able to find 84 normal samples. The overall ensemble seems to get much closer to the real number of normal samples. The different methods in the ensemble are able to learn different aspects of the samples, which will work better than a single method.
+
+% \indent First 13 features are widely used in the field of machine learning for audio classification\cite{b26}\cite{b27}. We utilize an existing library\cite{b6} that implements first those features. The last feature Local Amplitude Minimum is introduced by us to help classifiers distinguishing normal audio and abnormal audio, which turns out to be extremely efficient. The total number of features we have is 35, 8 of which are spectral related, 13 of which are MFCCs, 13 of them are chroma related features , and last one is the number of amplitude valley and peaks. According to Renyi's feature selection, our top five most informative features are : MFCC(3rd to 6th), SC, Number of Amplitude Vally and Peak, Spectral Flux, and ZCR. \\
+% Analysis on Why those five features are good
+% \begin{itemize}
+	% \item MFCCs
+	% MFCCs are consisted of 13 feature vectors, and those 13 feature vectors combined are used to represent the spectrum envelop of any signal. 
+	% \item ZCR
+	% ZCR intuitively represents the rate of which there is a vibration pushing and pulling the air. Normal patients tend to have a very low ZCR(around 5\%), but pathological patients comparably have a higher ZCR(around 10\% to 30\%)
+	% \item Spectral Centroid 
+	% SC describes the location of where the center of mass of a spectrum is. For this particular learning task, pathological patients could have very skewed SC; whereas normal patients have Centroid relatively close to the middle of the signal. Nevertheless, patients with different diseases could have different centroid locations.  
+	% \item Spectral Flux
+	% Spectral Flux intuitively represents how fast the the power spectrum of a signal is changing. Normal patients tend to have lower flux because they can successively talk without much vibration, but pathological patients tend to have higher flux because making smooth sound for them is impossible. 
+% \end{itemize}
+
 
 
