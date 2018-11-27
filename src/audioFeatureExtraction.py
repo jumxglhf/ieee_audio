@@ -514,6 +514,15 @@ def stSpectogram(signal, fs, win, step, PLOT=False):
 
     return (specgram, TimeAxis, FreqAxis)
 
+def peakNvalley(x):
+    count = 0
+    for index in range(1,len(x)-1):
+        if x[index-1] > x[index] and x[index] < x[index+1]:
+            count += 1
+        if x[index-1] < x[index] and x[index] > x[index+1]:
+            count += 1
+    return count
+
 
 """ Windowing and feature extraction """
 
@@ -570,6 +579,7 @@ def stFeatureExtraction(signal, fs, win, step):
     feature_names += ["chroma_{0:d}".format(chroma_i) 
                       for chroma_i in range(1, n_chroma_feats)]
     feature_names.append("chroma_std")
+    feature_names.append("peakNvalley")
     st_features = []
     while (cur_p + win - 1 < N):                        # for each short-term window until the end of signal
         count_fr += 1
@@ -580,7 +590,7 @@ def stFeatureExtraction(signal, fs, win, step):
         X = X / len(X)
         if count_fr == 1:
             X_prev = X.copy()                             # keep previous fft mag (used in spectral flux)
-        curFV = numpy.zeros((n_total_feats, 1))
+        curFV = numpy.zeros((n_total_feats+1, 1))
         curFV[0] = stZCR(x)                              # zero crossing rate
         curFV[1] = stEnergy(x)                           # short-term energy
         curFV[2] = stEnergyEntropy(x)                    # short-term entropy of energy
@@ -596,6 +606,7 @@ def stFeatureExtraction(signal, fs, win, step):
             chromaF
         curFV[n_time_spectral_feats + n_mfcc_feats + n_chroma_feats - 1] = \
             chromaF.std()
+        curFV[-1] = peakNvalley(x)
         st_features.append(curFV)
         # delta features
         '''
@@ -721,6 +732,17 @@ def stFeatureSpeed(signal, fs, win, step):
    It is important to note that, one single feature is extracted per WAV file (not the whole sequence of feature vectors)
 
  """
+
+
+def myExtraction(wavFile,st_win, st_step):
+    [fs, x] = audioBasicIO.readAudioFile(wavFile)
+    x = audioBasicIO.stereo2mono(x)
+    [features, name] = stFeatureExtraction(x, fs, round(fs * st_win), round(fs * st_step))
+    new_feature = []
+    for feature in features:
+        new_feature.append(sum(feature) / float(len(feature)))
+        print(sum(feature) / float(len(feature)))
+    return new_feature, name
 
 
 def dirWavFeatureExtraction(dirName, mt_win, mt_step, st_win, st_step,
